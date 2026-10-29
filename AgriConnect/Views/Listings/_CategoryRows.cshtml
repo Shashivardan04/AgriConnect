@@ -1,0 +1,78 @@
+@model List<CategoryIndexRow>
+@{
+    var slug = (string)ViewBag.Slug;
+    var type = (ListingType)ViewBag.ListingType;
+    var isLabour = type == ListingType.Labour;
+
+    // Count whatever is actually the resource. Equipment reserves the machine, so a
+    // farmer with three tractors offers three; labour reserves the person, so a
+    // worker with three tasks is still one; produce you buy from a seller.
+    //
+    // The number and the noun are kept apart and the noun is translated on its own,
+    // because Tamil does not put them together the way English does. Singular and
+    // plural stay separate keys for the same reason.
+    string Offer(CategoryIndexRow row)
+    {
+        var (count, one, many) = type switch
+        {
+            ListingType.Equipment => (row.Listings, "machine", "machines"),
+            ListingType.Labour => (row.Sellers, "person", "people"),
+            _ => (row.Sellers, "seller", "sellers")
+        };
+        return $"{count} {L[count == 1 ? one : many].Value}";
+    }
+
+    string Nothing() => L[type switch
+    {
+        ListingType.Equipment => "none listed yet",
+        ListingType.Labour => "nobody registered yet",
+        _ => "none on offer"
+    }].Value;
+}
+
+<div class="list-group mb-2">
+    @foreach (var row in Model)
+    {
+        @* Ordered by how much is on offer, so a category nobody uses sinks. *@
+        @if (!row.HasAny)
+        {
+            <div class="list-group-item d-flex justify-content-between align-items-center text-muted">
+                <span>@L[row.Name]</span>
+                <small>@Nothing()</small>
+            </div>
+        }
+        else
+        {
+            <a class="list-group-item list-group-item-action"
+               asp-action="Index" asp-route-type="@slug" asp-route-categoryId="@row.CategoryId">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span class="fw-semibold">@L[row.Name]</span>
+                    <span class="text-end small">
+                        @* bg-light + text-success, not the -subtle/-emphasis pair:
+                           those arrived in Bootstrap 5.3 and this project ships 5.1,
+                           where they silently do nothing and .badge's default white
+                           text leaves the count invisible on a white row. *@
+                        <span class="badge bg-light text-success border">
+                            @Offer(row)
+                        </span>
+
+                        @* One figure per unit, side by side. A product sold only by the
+                           head shows one; one sold by head and by weight shows both,
+                           rather than a blended number that is true of neither. *@
+                        @foreach (var unit in row.ByUnit)
+                        {
+                            <span class="text-muted ms-2">
+                                @if (unit.TotalQuantity is decimal qty)
+                                {
+                                    <text>@qty.ToString("N0") @L[ListingSlug.QuantityLabel(unit.Unit)] &middot; </text>
+                                }
+                                @L["from"] ₹@unit.LowestPrice.ToString("N0") @L[ListingSlug.UnitLabel(unit.Unit)]
+                            </span>
+                        }
+                    </span>
+                </div>
+            </a>
+        }
+    }
+</div>
+

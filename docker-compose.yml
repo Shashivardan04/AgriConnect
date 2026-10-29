@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: agriconnect-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "AgriDev!Pass2026"
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - db-data:/var/opt/mssql
+    healthcheck:
+      # The web container waits on this. SQL Server accepts TCP well before it can
+      # serve a query, so the check runs an actual query rather than probing the port.
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  web:
+    build: .
+    container_name: agriconnect-web
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      # No ASPNETCORE_URLS: the aspnet:8.0 base image already sets
+      # ASPNETCORE_HTTP_PORTS=8080, and setting both makes the host log that it is
+      # overriding one with the other on every start.
+      # Double underscore is the nested-key separator: this fills
+      # ConnectionStrings:DefaultConnection, which has no value in appsettings.json.
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=AgriConnect;User Id=sa;Password=AgriDev!Pass2026;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      # Keeps the data protection key ring off the container filesystem. Without it,
+      # rebuilding the image signs every member out and invalidates the antiforgery
+      # token on any form a browser already has open.
+      DataProtection__KeyPath: /app/keys
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - uploads:/app/wwwroot/uploads
+      - keys:/app/keys
+
+volumes:
+  db-data:
+  uploads:
+  keys:

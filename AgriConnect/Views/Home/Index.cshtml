@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = L["Home"].Value;
+}
+
+<div class="p-4 p-md-5 mb-4 rounded bg-light border">
+    <div class="col-lg-8">
+        <h1 class="display-6 fw-semibold">@L["Equipment, labour and a marketplace, in one place."]</h1>
+        <p class="lead text-muted">
+            @* Whole sentences, not fragments stitched together: the em dash sits in
+               the middle of the English, and Tamil has no reason to break there. *@
+            @L["Rent a tractor for three days, find a harvesting crew for the weekend, or sell what you grew — without ringing round the district to find out who has what."]
+        </p>
+        <a class="btn btn-success" asp-controller="Listings" asp-action="Index" asp-route-type="equipment">
+            @L["Browse equipment"]
+        </a>
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <a class="btn btn-outline-secondary ms-2" asp-area="Identity" asp-page="/Account/Register">@L["Create an account"]</a>
+        }
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@L["Equipment rental"]</h5>
+                <p class="card-text text-muted small">
+                    @L["Tractors, harvesters, tillers and pumps listed by the people who own them. Pick your dates and send a request; the owner accepts or declines."]
+                </p>
+                @* The arrow is written outside the key so a translator is never asked
+                   to carry an HTML entity through, and so it stays on the right of
+                   the label in both languages. *@
+                <a asp-controller="Listings" asp-action="Index" asp-route-type="equipment">@L["Find equipment"] &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@L["Marketplace"]</h5>
+                <p class="card-text text-muted small">
+                    @L["Vegetables, fruit, grain and livestock, with the seller's asking price shown against the reference price for that category and district."]
+                </p>
+                <a asp-controller="Listings" asp-action="Index" asp-route-type="marketplace">@L["Browse produce"] &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@L["Agricultural labour"]</h5>
+                <p class="card-text text-muted small">
+                    @L["Workers and crews list their skills, daily wage and the districts they cover. Request them for the days you need."]
+                </p>
+                <a asp-controller="Listings" asp-action="Index" asp-route-type="labour">@L["Find workers"] &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>

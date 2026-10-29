@@ -1,0 +1,48 @@
+@model Listing
+@{
+    var slug = ListingSlug.From(Model.Type);
+    var image = Model.Images.FirstOrDefault();
+}
+
+<div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-4">
+    <div class="card h-100 shadow-sm">
+        <a asp-controller="Listings" asp-action="Details" asp-route-type="@slug" asp-route-id="@Model.Id"
+           class="text-decoration-none">
+            @if (image is not null)
+            {
+                <img src="~/uploads/@image.FileName" class="card-img-top listing-thumb" alt="@Model.Title">
+            }
+            else
+            {
+                <div class="card-img-top listing-thumb bg-light d-flex align-items-center justify-content-center text-muted">
+                    @L["No photo"]
+                </div>
+            }
+        </a>
+        <div class="card-body d-flex flex-column">
+            <h6 class="card-title mb-1">
+                <a asp-controller="Listings" asp-action="Details" asp-route-type="@slug" asp-route-id="@Model.Id"
+                   class="stretched-link text-decoration-none text-dark">@Model.Title</a>
+            </h6>
+            <div class="small text-muted mb-2">
+                @* The category comes from the fixed seed list, so it translates. The
+                   title above does not: it is whatever the seller typed. *@
+                @L[Model.Category?.Name ?? ""] &middot; @L[Model.District]
+            </div>
+            <div class="mt-auto">
+                @if (Model.Quantity is decimal qty)
+                {
+                    <div class="small text-muted">
+                        @qty.ToString("N0") @L[ListingSlug.QuantityLabel(Model.PriceUnit)] @L["available"]
+                    </div>
+                }
+                <span class="fw-semibold">₹@Model.Price.ToString("N0")</span>
+                <span class="small text-muted">@L[ListingSlug.UnitLabel(Model.PriceUnit)]</span>
+                @if (Model.Status == ListingStatus.Sold)
+                {
+                    <span class="badge bg-secondary float-end">@L["Sold"]</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>

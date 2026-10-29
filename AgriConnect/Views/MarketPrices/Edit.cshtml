@@ -1,0 +1,57 @@
+@model MarketPrice
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = L[isNew ? "Add reference price" : "Edit reference price"].Value;
+}
+
+<h1 class="h4 mb-4">@ViewData["Title"]</h1>
+
+<form asp-action="Edit" asp-route-id="@(isNew ? null : (int?)Model.Id)" method="post" class="col-lg-7">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="CategoryId" class="form-label"></label>
+            <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-select">
+                <option value="">@L["Choose..."]</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="District" class="form-label"></label>
+            <select asp-for="District" asp-items="ViewBag.DistrictList" class="form-select">
+                <option value="">@L["Choose..."]</option>
+            </select>
+            <span asp-validation-for="District" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Price" class="form-label"></label>
+            <div class="input-group">
+                <span class="input-group-text">₹</span>
+                <input asp-for="Price" class="form-control">
+            </div>
+            <span asp-validation-for="Price" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Unit" class="form-label"></label>
+            <select asp-for="Unit" class="form-select"
+                    asp-items="@(Enum.GetValues<PriceUnit>().Select(u => new SelectListItem(L[ListingSlug.UnitLabel(u)].Value, ((int)u).ToString())))">
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="AsOfDate" class="form-label"></label>
+            <input asp-for="AsOfDate" type="date" class="form-control">
+        </div>
+        <div class="col-12">
+            <label asp-for="Source" class="form-label"></label>
+            <input asp-for="Source" class="form-control" placeholder="@L["Where this figure came from"]">
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button class="btn btn-success">@L["Save"]</button>
+        <a class="btn btn-link" asp-action="Index">@L["Cancel"]</a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

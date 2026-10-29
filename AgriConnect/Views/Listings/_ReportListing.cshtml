@@ -1,0 +1,19 @@
+@model Listing
+
+<div class="text-center mt-3">
+    <button class="btn btn-link btn-sm text-muted" type="button"
+            data-bs-toggle="collapse" data-bs-target="#report-form">
+        @L["Report this listing"]
+    </button>
+</div>
+
+<div class="collapse" id="report-form">
+    <form asp-controller="Listings" asp-action="Report"
+          asp-route-type="@ListingSlug.From(Model.Type)" asp-route-id="@Model.Id"
+          method="post" class="card card-body mt-2">
+        <label class="form-label small mb-1">@L["What is wrong with it?"]</label>
+        <textarea name="reason" rows="2" class="form-control form-control-sm" required
+                  placeholder="@L["Misleading description, wrong photos, not a real listing..."]"></textarea>
+        <button class="btn btn-sm btn-outline-danger mt-2">@L["Send report"]</button>
+    </form>
+</div>

@@ -1,0 +1,70 @@
+@model List<CategoryIndexRow>
+@{
+    var slug = (string)ViewBag.Slug;
+    var type = (ListingType)ViewBag.ListingType;
+    var isLabour = type == ListingType.Labour;
+
+    ViewData["Title"] = ListingSlug.Heading(type);
+
+    // Labour tasks carry no group and render flat, as they always have. Marketplace
+    // products sit under Livestock / Vegetables / Fruits headings.
+    var grouped = Model.Any(r => r.Group is not null);
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-0">@L[ListingSlug.Heading(type)]</h1>
+        <p class="text-muted mb-0">
+            @* Each sentence is one key. Translating it whole lets Tamil order the
+               clauses its own way instead of following the English. *@
+            @L[type switch
+            {
+                ListingType.Equipment => "Choose the machine you need, then compare what is free on your dates.",
+                ListingType.Labour => "Choose the work you need, then compare the people who do it.",
+                _ => "Choose what you are buying, then compare what is on offer across every district."
+            }]
+        </p>
+    </div>
+    <a class="btn btn-success" asp-action="Create" asp-route-type="@slug">
+        @L[ListingSlug.AddAction(type)]
+    </a>
+</div>
+
+@if (Model.All(r => !r.HasAny))
+{
+    <div class="alert alert-light border text-center py-5">
+        <p class="mb-2">@L["Nothing is listed here yet."]</p>
+        <a class="btn btn-outline-success btn-sm" asp-action="Create" asp-route-type="@slug">@L["Be the first"]</a>
+    </div>
+}
+else
+{
+    @if (grouped)
+    {
+        @foreach (var group in Model.GroupBy(r => r.Group).OrderBy(g => g.Key))
+        {
+            @* Group names are seed data from a fixed list, so they translate too. *@
+            <h6 class="text-uppercase text-muted small mt-4 mb-2">@L[group.Key!]</h6>
+            <partial name="_CategoryRows" model="group.OrderByDescending(r => r.Listings).ThenBy(r => r.Name).ToList()"/>
+        }
+    }
+    else
+    {
+        <partial name="_CategoryRows" model="Model.OrderByDescending(r => r.Listings).ThenBy(r => r.Name).ToList()"/>
+    }
+
+    @* One key per whole note, rather than a switch emitting English into the markup.
+       The em dash is written as a literal here so the key is exactly the sentence a
+       translator sees, with no entity in the middle of it. *@
+    <p class="form-text mt-3">
+        @L[type switch
+        {
+            ListingType.Equipment =>
+                "Each machine is booked separately, so an owner with two tractors can hire out both on the same days.",
+            ListingType.Labour =>
+                "A worker may register for several tasks. Whichever task you book them for, those dates are taken across all of them — one person, one calendar.",
+            _ =>
+                "Quantities and prices are totalled separately for each unit, because head and kilos cannot be added together."
+        }]
+    </p>
+}

@@ -1,0 +1,65 @@
+@model ProfileForm
+@{
+    ViewData["Title"] = L["My profile"].Value;
+}
+
+<h1 class="h4 mb-1">@L["My profile"]</h1>
+<p class="text-muted">
+    @L["Your district is how people find you and how labour results are ordered, so it is worth keeping accurate."]
+</p>
+
+<form method="post" class="col-lg-8">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    @* Labels come from [Display] on ProfileForm through the data annotations
+       localizer. Placeholders, option text and help lines are done here. *@
+    <div class="row g-3">
+        <div class="col-md-7">
+            <label asp-for="FullName" class="form-label"></label>
+            <input asp-for="FullName" class="form-control">
+            <span asp-validation-for="FullName" class="text-danger small"></span>
+        </div>
+        <div class="col-md-5">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control">
+            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+            <div class="form-text">@L["Shown to signed-in members on your listings."]</div>
+        </div>
+
+        <div class="col-md-5">
+            <label asp-for="Gender" class="form-label"></label>
+            <select asp-for="Gender" class="form-select"
+                    asp-items="@(Enum.GetValues<Gender>().Select(g => new SelectListItem(L[g.ToString()].Value, ((int)g).ToString())))">
+                <option value="">@L["Prefer not to say"]</option>
+            </select>
+            <div class="form-text">@L["Optional. Shown on your labour profile if you give it."]</div>
+        </div>
+
+        <div class="col-12"><hr class="my-2"><h6 class="text-muted mb-0">@L["Where you are"]</h6></div>
+
+        <div class="col-md-4">
+            <label asp-for="District" class="form-label"></label>
+            <select asp-for="District" asp-items="ViewBag.Districts" class="form-select">
+                <option value="">@L["Choose..."]</option>
+            </select>
+            <span asp-validation-for="District" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Town" class="form-label"></label>
+            <input asp-for="Town" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Village" class="form-label"></label>
+            <input asp-for="Village" class="form-control">
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">@L["Save profile"]</button>
+        <a class="btn btn-link" asp-area="Identity" asp-page="/Account/Manage/Index">
+            @L["Change password or email"]
+        </a>
+    </div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

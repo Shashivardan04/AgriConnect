@@ -1,0 +1,46 @@
+@model Listing
+@{
+    var slug = ListingSlug.From(Model.Type);
+    ViewData["Title"] = L["Edit listing"].Value;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-route-type="@slug">@L[ListingSlug.Heading(Model.Type)]</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-type="@slug" asp-route-id="@Model.Id">@Model.Title</a></li>
+        <li class="breadcrumb-item active">@L["Edit"]</li>
+    </ol>
+</nav>
+
+<h1 class="h4 mb-4">@L["Edit listing"]</h1>
+
+<form asp-action="Edit" asp-route-type="@slug" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+    <partial name="_Form" model="Model"/>
+
+    <div class="row g-3 mt-1">
+        <div class="col-md-4">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-select"
+                    asp-items="@(Enum.GetValues<ListingStatus>().Where(s => s != ListingStatus.Removed)
+                                     .Select(s => new SelectListItem(L[s.ToString()].Value, ((int)s).ToString())))">
+            </select>
+            <div class="form-text">@L["Mark as sold to keep it visible but closed."]</div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">@L["Save changes"]</button>
+        <a class="btn btn-link" asp-action="Details" asp-route-type="@slug" asp-route-id="@Model.Id">@L["Cancel"]</a>
+    </div>
+</form>
+
+<hr class="mt-5">
+@* Serialised rather than pasted into the JavaScript string: a translation with an
+   apostrophe in it would otherwise end the literal and break the page. *@
+<form asp-action="Delete" asp-route-type="@slug" asp-route-id="@Model.Id" method="post"
+      onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Remove this listing? Past bookings are kept."].Value)));">
+    <button type="submit" class="btn btn-outline-danger btn-sm">@L["Remove listing"]</button>
+    <span class="form-text ms-2">@L["The listing is hidden; its booking history is preserved."]</span>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial"/> }

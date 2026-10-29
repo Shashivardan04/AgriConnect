@@ -1,0 +1,87 @@
+@model ListingSearch
+@{
+    var slug = (string)ViewBag.Slug;
+    var type = (ListingType)ViewBag.ListingType;
+    var bookable = type is ListingType.Equipment or ListingType.Labour;
+}
+
+<form method="get" asp-action="Index" asp-route-type="@slug" class="card card-body bg-light border mb-4">
+    <div class="row g-2 align-items-end">
+        @* The labels come from [Display] on ListingSearch and are translated by the
+           data annotations localizer, which is wired to the same resource file.
+           Placeholders and option text are not attributes, so they are done here. *@
+        <div class="col-12 col-md-4">
+            <label asp-for="Q" class="form-label small mb-1"></label>
+            <input asp-for="Q" class="form-control form-control-sm" placeholder="@L["Name or description"]">
+        </div>
+        <div class="col-6 col-md-3">
+            <label asp-for="CategoryId" class="form-label small mb-1"></label>
+            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select form-select-sm">
+                <option value="">@L["Any"]</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-3">
+            <label asp-for="District" class="form-label small mb-1"></label>
+            <select asp-for="District" asp-items="ViewBag.Districts" class="form-select form-select-sm">
+                <option value="">@L["Any"]</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <label asp-for="Place" class="form-label small mb-1"></label>
+            <input asp-for="Place" class="form-control form-control-sm" placeholder="@L["Town, village"]">
+        </div>
+
+        <div class="col-6 col-md-2">
+            <label asp-for="MinPrice" class="form-label small mb-1"></label>
+            <input asp-for="MinPrice" class="form-control form-control-sm" placeholder="₹">
+        </div>
+        <div class="col-6 col-md-2">
+            <label asp-for="MaxPrice" class="form-label small mb-1"></label>
+            <input asp-for="MaxPrice" class="form-control form-control-sm" placeholder="₹">
+        </div>
+
+        @if (type == ListingType.Labour)
+        {
+            <div class="col-6 col-md-2">
+                <label asp-for="Gender" class="form-label small mb-1"></label>
+                <select asp-for="Gender" class="form-select form-select-sm"
+                        asp-items="@(Enum.GetValues<Gender>().Select(g => new SelectListItem(L[g.ToString()].Value, ((int)g).ToString())))">
+                    <option value="">@L["Any"]</option>
+                </select>
+            </div>
+        }
+
+        @if (bookable)
+        {
+            <div class="col-6 col-md-2">
+                <label asp-for="From" class="form-label small mb-1"></label>
+                <input asp-for="From" type="date" class="form-control form-control-sm">
+            </div>
+            <div class="col-6 col-md-2">
+                <label asp-for="To" class="form-label small mb-1"></label>
+                <input asp-for="To" type="date" class="form-control form-control-sm">
+            </div>
+        }
+
+        <div class="col-6 col-md-2">
+            <label asp-for="Sort" class="form-label small mb-1"></label>
+            <select asp-for="Sort" class="form-select form-select-sm">
+                <option value="">@L["Newest"]</option>
+                <option value="price">@L["Price, low to high"]</option>
+                <option value="price_desc">@L["Price, high to low"]</option>
+                <option value="title">@L["Name"]</option>
+            </select>
+        </div>
+
+        <div class="col-12 col-md-@(bookable ? "2" : "4") d-flex gap-2">
+            @* "Search" is the submit button here and also the label on the text box
+               above, which comes from [Display(Name = "Search")]. Same word, same
+               key, same translation - no collision, because it is one key. *@
+            <button type="submit" class="btn btn-sm btn-success flex-grow-1">@L["Search"]</button>
+            @if (Model.AnyFilter)
+            {
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Index" asp-route-type="@slug">@L["Clear"]</a>
+            }
+        </div>
+    </div>
+</form>

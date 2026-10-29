@@ -1,0 +1,170 @@
+@model Listing
+@{
+    var slug = ListingSlug.From(Model.Type);
+}
+
+@* "All", not "ModelOnly": an error on a property with no field on screen is
+   otherwise invisible and the form just silently refuses to save. *@
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div class="row g-3">
+    <div class="col-md-8">
+        @* Labour lists the person, never this - the name comes from the member's
+           profile. Say so, or people type their own name in here. *@
+        <label asp-for="Title" class="form-label">
+            @L[Model.Type == ListingType.Labour ? "Headline for this task" : "Title"]
+        </label>
+        <input asp-for="Title" class="form-control" placeholder="@L[Model.Type switch
+        {
+            ListingType.Labour => "e.g. Canal and drip irrigation, 10 years",
+            ListingType.Produce => "e.g. Nattu tomatoes, picked this morning",
+            _ => "e.g. Mahindra 575 DI tractor"
+        }]">
+        <span asp-validation-for="Title" class="text-danger small"></span>
+        @if (Model.Type == ListingType.Labour)
+        {
+            <div class="form-text">
+                @L["Farmers see your name from your profile, not this line. Describe the work, not yourself."]
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="CategoryId" class="form-label">
+            @L[Model.Type == ListingType.Produce ? "Product" : Model.Type == ListingType.Labour ? "Task" : "Category"]
+        </label>
+        @* Options carry their usual unit so picking the product can pre-select it.
+           asp-items cannot attach data attributes, so these are written out. *@
+        <select asp-for="CategoryId" class="form-select" id="CategoryId">
+            <option value="">@L["Choose..."]</option>
+            @foreach (var category in (List<Category>)ViewBag.CategoryList)
+            {
+                <option value="@category.Id"
+                        data-unit="@((int?)category.SuggestedUnit)"
+                        selected="@(category.Id == Model.CategoryId)">
+                    @L[category.Name]@(category.Group is null ? "" : $" ({L[category.Group].Value})")
+                </option>
+            }
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Price" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text">₹</span>
+            <input asp-for="Price" class="form-control">
+        </div>
+        <span asp-validation-for="Price" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="PriceUnit" class="form-label"></label>
+        <select asp-for="PriceUnit" class="form-select"
+                asp-items="@(Enum.GetValues<PriceUnit>().Select(u => new SelectListItem(L[ListingSlug.UnitLabel(u)].Value, ((int)u).ToString())))">
+        </select>
+    </div>
+
+    @if (Model.Type == ListingType.Produce)
+    {
+        <div class="col-md-4">
+            <label asp-for="Quantity" class="form-label">
+                @L["Quantity available"] <span class="text-muted" id="quantity-unit"></span>
+            </label>
+            <input asp-for="Quantity" class="form-control">
+            <span asp-validation-for="Quantity" class="text-danger small"></span>
+        </div>
+    }
+
+    @if (Model.Type == ListingType.Labour)
+    {
+        <div class="col-md-4">
+            <label asp-for="ExperienceYears" class="form-label"></label>
+            <input asp-for="ExperienceYears" class="form-control">
+            <span asp-validation-for="ExperienceYears" class="text-danger small"></span>
+        </div>
+        <div class="col-12">
+            <label asp-for="Skills" class="form-label">@L["Skills and the work you take on"]</label>
+            <textarea asp-for="Skills" rows="2" class="form-control"></textarea>
+            <span asp-validation-for="Skills" class="text-danger small"></span>
+        </div>
+    }
+
+    <div class="col-12"><hr class="my-2"><h6 class="text-muted mb-0">@L["Location"]</h6></div>
+
+    <div class="col-md-4">
+        <label asp-for="District" class="form-label"></label>
+        <select asp-for="District" asp-items="ViewBag.Districts" class="form-select">
+            <option value="">@L["Choose..."]</option>
+        </select>
+        <span asp-validation-for="District" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Town" class="form-label">@L["Town or taluk"]</label>
+        <input asp-for="Town" class="form-control">
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Village" class="form-label"></label>
+        <input asp-for="Village" class="form-control">
+    </div>
+
+    <div class="col-12"><hr class="my-2"><h6 class="text-muted mb-0">@L["Photos"]</h6></div>
+
+    <div class="col-12">
+        <input type="file" name="images" multiple accept=".jpg,.jpeg,.png,.webp" class="form-control">
+        <div class="form-text">@L["Up to 5 photos, 4 MB each. JPG, PNG or WebP."]</div>
+    </div>
+
+    @if (Model.Images.Count > 0)
+    {
+        <div class="col-12">
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var image in Model.Images)
+                {
+                    <div class="position-relative">
+                        <img src="~/uploads/@image.FileName" class="rounded border thumb-sm" alt="">
+                        <button type="submit" class="btn btn-sm btn-danger position-absolute top-0 end-0 py-0 px-1"
+                                formaction="@Url.Action("DeleteImage", new { type = slug, id = Model.Id, imageId = image.Id })"
+                                formmethod="post" title="@L["Remove photo"]">&times;</button>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@* Picking a product pre-selects the unit it is usually sold in, and the quantity
+   label follows. The seller can still override it - sheep sold by weight is unusual
+   but not wrong. Inline because a partial cannot define a Scripts section. *@
+<script>
+    (function () {
+        const category = document.getElementById('CategoryId');
+        const unit = document.querySelector('select[name="PriceUnit"]');
+        if (!category || !unit) return;
+
+        const quantityUnit = document.getElementById('quantity-unit');
+        const unitNouns = { 3: 'kg', 4: 'quintal', 5: 'head', 6: 'litres', 1: 'days', 2: 'hours' };
+
+        function showQuantityUnit() {
+            if (quantityUnit) {
+                const noun = unitNouns[unit.value];
+                quantityUnit.textContent = noun ? '(' + noun + ')' : '';
+            }
+        }
+
+        category.addEventListener('change', function () {
+            const suggested = this.selectedOptions[0]?.dataset.unit;
+            if (suggested) unit.value = suggested;
+            showQuantityUnit();
+        });
+
+        unit.addEventListener('change', showQuantityUnit);
+        showQuantityUnit();
+    })();
+</script>

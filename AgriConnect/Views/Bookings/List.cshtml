@@ -1,0 +1,126 @@
+@model List<Booking>
+@{
+    // The controller sets the heading in English; it is a key like any other.
+    var heading = L[(string)ViewBag.Heading].Value;
+    ViewData["Title"] = heading;
+    var asOwner = (string)ViewBag.Perspective == "owner";
+    var back = asOwner ? "received" : "mine";
+
+    string Badge(BookingStatus s) => s switch
+    {
+        BookingStatus.Pending => "bg-warning text-dark",
+        BookingStatus.Approved => "bg-success",
+        BookingStatus.Rejected => "bg-danger",
+        BookingStatus.Cancelled => "bg-secondary",
+        BookingStatus.Completed => "bg-primary",
+        _ => "bg-light text-dark"
+    };
+}
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link @(asOwner ? "" : "active")" asp-action="Mine">@L["My requests"]</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(asOwner ? "active" : "")" asp-action="Received">@L["Requests for my listings"]</a>
+    </li>
+</ul>
+
+<h1 class="h4 mb-3">@heading</h1>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-light border">@L["Nothing here yet."]</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>@L["Listing"]</th>
+                <th>@L[asOwner ? "Requested by" : "Owner"]</th>
+                <th>@L["Dates"]</th>
+                <th>@L["Status"]</th>
+                <th class="text-end">@L["Action"]</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var b in Model)
+            {
+                @* Every row is loaded with Include(b => b.Listing), so hoist it once
+                   rather than null-forgiving it at each use. *@
+                var listing = b.Listing!;
+                var ownBlock = asOwner && b.RequesterId == listing.OwnerId;
+                <tr>
+                    <td>
+                        <a asp-controller="Listings" asp-action="Details"
+                           asp-route-type="@ListingSlug.From(listing.Type)" asp-route-id="@b.ListingId">
+                            @listing.Title
+                        </a>
+                        @if (!string.IsNullOrWhiteSpace(b.Message))
+                        {
+                            <div class="small text-muted">@b.Message</div>
+                        }
+                    </td>
+                    <td class="small">
+                        @if (ownBlock)
+                        {
+                            <span class="text-muted">@L["You (blocked)"]</span>
+                        }
+                        else
+                        {
+                            @(asOwner ? b.Requester?.FullName : listing.Owner?.FullName)
+                        }
+                    </td>
+                    <td class="small">
+                        @Dates.Short(b.FromDate) &ndash; @Dates.Full(b.ToDate)
+                        @{ var nights = b.ToDate.DayNumber - b.FromDate.DayNumber; }
+                        <div class="text-muted">@nights @L[nights == 1 ? "day" : "days"]</div>
+                    </td>
+                    <td><span class="badge @Badge(b.Status)">@L[b.Status.ToString()]</span></td>
+                    <td class="text-end">
+                        <div class="d-flex gap-1 justify-content-end">
+                            @if (asOwner && b.Status == BookingStatus.Pending && !ownBlock)
+                            {
+                                <form asp-action="Approve" method="post">
+                                    <input type="hidden" name="id" value="@b.Id"/>
+                                    <button class="btn btn-sm btn-success">@L["Approve"]</button>
+                                </form>
+                                <form asp-action="SetStatus" method="post">
+                                    <input type="hidden" name="id" value="@b.Id"/>
+                                    <input type="hidden" name="status" value="@((int)BookingStatus.Rejected)"/>
+                                    <input type="hidden" name="back" value="@back"/>
+                                    <button class="btn btn-sm btn-outline-danger">@L["Decline"]</button>
+                                </form>
+                            }
+                            @if (asOwner && b.Status == BookingStatus.Approved)
+                            {
+                                <form asp-action="SetStatus" method="post">
+                                    <input type="hidden" name="id" value="@b.Id"/>
+                                    <input type="hidden" name="status" value="@((int)BookingStatus.Completed)"/>
+                                    <input type="hidden" name="back" value="@back"/>
+                                    <button class="btn btn-sm btn-outline-primary">@L["Mark complete"]</button>
+                                </form>
+                            }
+                            @if (b.Status is BookingStatus.Pending or BookingStatus.Approved)
+                            {
+                                @* The confirm text goes through the localizer too, and
+                                   is escaped for a JavaScript string literal rather
+                                   than pasted straight into one. *@
+                                <form asp-action="SetStatus" method="post"
+                                      onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Cancel this booking?"].Value)));">
+                                    <input type="hidden" name="id" value="@b.Id"/>
+                                    <input type="hidden" name="status" value="@((int)BookingStatus.Cancelled)"/>
+                                    <input type="hidden" name="back" value="@back"/>
+                                    <button class="btn btn-sm btn-outline-secondary">@L["Cancel"]</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

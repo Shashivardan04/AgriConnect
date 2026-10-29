@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Tamil. Keys are the English text itself, so there is no matching .resx for
+    English: a key with no entry here renders as the key, which is already correct
+    English. See Models/SharedResource.cs.
+
+    Category, group and district names appear here because they are a fixed seed
+    set, not free text. Titles and descriptions a member types are their own words
+    and are shown as typed.
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- navigation and chrome -->
+  <data name="Equipment" xml:space="preserve"><value>உபகரணங்கள்</value></data>
+  <data name="Marketplace" xml:space="preserve"><value>சந்தை</value></data>
+  <data name="Labour" xml:space="preserve"><value>தொழிலாளர்</value></data>
+  <data name="Market prices" xml:space="preserve"><value>சந்தை விலைகள்</value></data>
+  <data name="Admin" xml:space="preserve"><value>நிர்வாகம்</value></data>
+  <data name="Privacy" xml:space="preserve"><value>தனியுரிமை</value></data>
+  <data name="Home" xml:space="preserve"><value>முகப்பு</value></data>
+  <data name="Register" xml:space="preserve"><value>பதிவு செய்யுங்கள்</value></data>
+  <data name="Log in" xml:space="preserve"><value>உள்நுழைக</value></data>
+  <data name="Log out" xml:space="preserve"><value>வெளியேறு</value></data>
+  <data name="Profile" xml:space="preserve"><value>சுயவிவரம்</value></data>
+  <data name="My bookings" xml:space="preserve"><value>எனது முன்பதிவுகள்</value></data>
+  <data name="Alerts" xml:space="preserve"><value>அறிவிப்புகள்</value></data>
+  <data name="Notifications" xml:space="preserve"><value>அறிவிப்புகள்</value></data>
+
+  <!-- section headings and nouns -->
+  <data name="Equipment rental" xml:space="preserve"><value>உபகரண வாடகை</value></data>
+  <data name="Agricultural labour" xml:space="preserve"><value>விவசாயத் தொழிலாளர்</value></data>
+  <!--
+    Keys are compared without regard to case when the file is compiled, so "equipment"
+    and "Equipment" are a duplicate and one of them is dropped - silently, apart from
+    a build warning. The lowercase nouns that used to sit here collided with the
+    navigation labels, so the phrases that needed them were rewritten whole instead.
+  -->
+  <!--
+    These sit in buttons. Tamil runs roughly 40% longer than the same English,
+    so the literal translation ("உபகரணத்தைப் பட்டியலிடு", 22 characters) runs out
+    of the button it lives in. The shorter phrase says the same thing.
+  -->
+  <data name="List equipment" xml:space="preserve"><value>உபகரணம் சேர்</value></data>
+  <data name="List a product" xml:space="preserve"><value>பொருள் சேர்</value></data>
+  <data name="Register for a task" xml:space="preserve"><value>பணிக்குப் பதிவு</value></data>
+  <data name="Your listing has been posted." xml:space="preserve"><value>உங்கள் பட்டியல் வெளியிடப்பட்டது.</value></data>
+
+  <!-- equipment categories -->
+  <data name="Tractor" xml:space="preserve"><value>டிராக்டர்</value></data>
+  <data name="Rotavator" xml:space="preserve"><value>ரோட்டவேட்டர்</value></data>
+  <data name="Plough" xml:space="preserve"><value>கலப்பை</value></data>
+  <data name="Power Weeder" xml:space="preserve"><value>பவர் களையெடுப்பான்</value></data>
+  <data name="Seed Drill" xml:space="preserve"><value>விதைப்பான்</value></data>
+  <data name="Harvester" xml:space="preserve"><value>அறுவடை இயந்திரம்</value></data>
+  <data name="Thresher" xml:space="preserve"><value>கதிரடி இயந்திரம்</value></data>
+  <data name="Water Pump" xml:space="preserve"><value>நீர் இறைப்பான்</value></data>
+  <data name="Sprayer" xml:space="preserve"><value>மருந்து தெளிப்பான்</value></data>
+  <data name="Trailer" xml:space="preserve"><value>இழுவை வண்டி</value></data>
+  <data name="Chaff Cutter" xml:space="preserve"><value>தீவனம் நறுக்கி</value></data>
+
+  <!-- equipment groups -->
+  <data name="Tillage and land preparation" xml:space="preserve"><value>உழவு மற்றும் நிலம் தயாரித்தல்</value></data>
+  <!-- "Sowing and seeding", not "Sowing and planting": the labour task is called
+       "Sowing and Planting" and the two would collide on case alone. -->
+  <data name="Sowing and seeding" xml:space="preserve"><value>விதைப்பு மற்றும் விதை இடுதல்</value></data>
+  <data name="Harvesting and threshing" xml:space="preserve"><value>அறுவடை மற்றும் கதிரடித்தல்</value></data>
+  <data name="Irrigation and spraying" xml:space="preserve"><value>நீர்ப்பாசனம் மற்றும் தெளிப்பு</value></data>
+  <data name="Haulage and fodder" xml:space="preserve"><value>இழுவை மற்றும் தீவனம்</value></data>
+
+  <!-- marketplace groups -->
+  <data name="Livestock" xml:space="preserve"><value>கால்நடைகள்</value></data>
+  <data name="Vegetables" xml:space="preserve"><value>காய்கறிகள்</value></data>
+  <data name="Fruits" xml:space="preserve"><value>பழங்கள்</value></data>
+  <data name="Grains and Pulses" xml:space="preserve"><value>தானியங்கள் மற்றும் பருப்புகள்</value></data>
+  <data name="Dairy" xml:space="preserve"><value>பால் பொருட்கள்</value></data>
+
+  <!-- livestock -->
+  <data name="Sheep" xml:space="preserve"><value>செம்மறி ஆடு</value></data>
+  <data name="Goat" xml:space="preserve"><value>வெள்ளாடு</value></data>
+  <data name="Cow" xml:space="preserve"><value>பசு</value></data>
+  <data name="Buffalo" xml:space="preserve"><value>எருமை</value></data>
+  <data name="Poultry" xml:space="preserve"><value>கோழி</value></data>
+  <data name="Duck" xml:space="preserve"><value>வாத்து</value></data>
+
+  <!-- vegetables -->
+  <data name="Tomato" xml:space="preserve"><value>தக்காளி</value></data>
+  <data name="Onion" xml:space="preserve"><value>வெங்காயம்</value></data>
+  <data name="Brinjal" xml:space="preserve"><value>கத்தரிக்காய்</value></data>
+  <data name="Okra" xml:space="preserve"><value>வெண்டைக்காய்</value></data>
+  <data name="Drumstick" xml:space="preserve"><value>முருங்கைக்காய்</value></data>
+  <data name="Green Chilli" xml:space="preserve"><value>பச்சை மிளகாய்</value></data>
+  <data name="Carrot" xml:space="preserve"><value>கேரட்</value></data>
+  <data name="Beans" xml:space="preserve"><value>அவரைக்காய்</value></data>
+
+  <!-- fruits -->
+  <data name="Mango" xml:space="preserve"><value>மாம்பழம்</value></data>
+  <data name="Banana" xml:space="preserve"><value>வாழைப்பழம்</value></data>
+  <data name="Guava" xml:space="preserve"><value>கொய்யாப்பழம்</value></data>
+  <data name="Papaya" xml:space="preserve"><value>பப்பாளி</value></data>
+  <data name="Sapota" xml:space="preserve"><value>சப்போட்டா</value></data>
+  <data name="Pomegranate" xml:space="preserve"><value>மாதுளை</value></data>
+
+  <!-- grains and pulses -->
+  <data name="Samba Paddy" xml:space="preserve"><value>சம்பா நெல்</value></data>
+  <data name="Groundnut" xml:space="preserve"><value>நிலக்கடலை</value></data>
+  <data name="Black Gram" xml:space="preserve"><value>உளுந்து</value></data>
+  <data name="Green Gram" xml:space="preserve"><value>பாசிப்பயறு</value></data>
+  <data name="Maize" xml:space="preserve"><value>மக்காச்சோளம்</value></data>
+  <data name="Ragi" xml:space="preserve"><value>கேழ்வரகு</value></data>
+  <data name="Cotton" xml:space="preserve"><value>பருத்தி</value></data>
+
+  <!-- dairy -->
+  <data name="Cow Milk" xml:space="preserve"><value>பசும் பால்</value></data>
+  <data name="Buffalo Milk" xml:space="preserve"><value>எருமைப் பால்</value></data>
+  <data name="Goat Milk" xml:space="preserve"><value>ஆட்டுப் பால்</value></data>
+
+  <!-- labour tasks -->
+  <data name="Harvesting" xml:space="preserve"><value>அறுவடை</value></data>
+  <data name="Sowing and Planting" xml:space="preserve"><value>விதைப்பு மற்றும் நடவு</value></data>
+  <data name="Weeding" xml:space="preserve"><value>களையெடுப்பு</value></data>
+  <data name="Spraying" xml:space="preserve"><value>மருந்து தெளிப்பு</value></data>
+  <data name="General Farm Help" xml:space="preserve"><value>பொதுப் பண்ணை உதவி</value></data>
+  <data name="Ploughing" xml:space="preserve"><value>உழவு</value></data>
+  <data name="Irrigation" xml:space="preserve"><value>நீர்ப்பாசனம்</value></data>
+  <data name="Threshing and Winnowing" xml:space="preserve"><value>கதிரடித்தல் மற்றும் தூற்றுதல்</value></data>
+  <data name="Pruning" xml:space="preserve"><value>கிளை கத்தரித்தல்</value></data>
+  <data name="Fencing" xml:space="preserve"><value>வேலி அமைத்தல்</value></data>
+  <data name="Livestock Herding" xml:space="preserve"><value>கால்நடை மேய்ப்பு</value></data>
+  <data name="Dairy Milking" xml:space="preserve"><value>பால் கறத்தல்</value></data>
+  <data name="Loading and Unloading" xml:space="preserve"><value>ஏற்றுதல் மற்றும் இறக்குதல்</value></data>
+  <data name="Nursery Work" xml:space="preserve"><value>நாற்றங்கால் வேலை</value></data>
+  <data name="Machine Operator" xml:space="preserve"><value>இயந்திர ஓட்டுநர்</value></data>
+
+  <!-- districts: all thirty-eight, matching Models/Districts.cs -->
+  <data name="Ariyalur" xml:space="preserve"><value>அரியலூர்</value></data>
+  <data name="Chengalpattu" xml:space="preserve"><value>செங்கல்பட்டு</value></data>
+  <data name="Chennai" xml:space="preserve"><value>சென்னை</value></data>
+  <data name="Coimbatore" xml:space="preserve"><value>கோயம்புத்தூர்</value></data>
+  <data name="Cuddalore" xml:space="preserve"><value>கடலூர்</value></data>
+  <data name="Dharmapuri" xml:space="preserve"><value>தருமபுரி</value></data>
+  <data name="Dindigul" xml:space="preserve"><value>திண்டுக்கல்</value></data>
+  <data name="Erode" xml:space="preserve"><value>ஈரோடு</value></data>
+  <data name="Kallakurichi" xml:space="preserve"><value>கள்ளக்குறிச்சி</value></data>
+  <data name="Kanchipuram" xml:space="preserve"><value>காஞ்சிபுரம்</value></data>
+  <data name="Kanyakumari" xml:space="preserve"><value>கன்னியாகுமரி</value></data>
+  <data name="Karur" xml:space="preserve"><value>கரூர்</value></data>
+  <data name="Krishnagiri" xml:space="preserve"><value>கிருஷ்ணகிரி</value></data>
+  <data name="Madurai" xml:space="preserve"><value>மதுரை</value></data>
+  <data name="Mayiladuthurai" xml:space="preserve"><value>மயிலாடுதுறை</value></data>
+  <data name="Nagapattinam" xml:space="preserve"><value>நாகப்பட்டினம்</value></data>
+  <data name="Namakkal" xml:space="preserve"><value>நாமக்கல்</value></data>
+  <data name="Nilgiris" xml:space="preserve"><value>நீலகிரி</value></data>
+  <data name="Perambalur" xml:space="preserve"><value>பெரம்பலூர்</value></data>
+  <data name="Pudukkottai" xml:space="preserve"><value>புதுக்கோட்டை</value></data>
+  <data name="Ramanathapuram" xml:space="preserve"><value>இராமநாதபுரம்</value></data>
+  <data name="Ranipet" xml:space="preserve"><value>இராணிப்பேட்டை</value></data>
+  <data name="Salem" xml:space="preserve"><value>சேலம்</value></data>
+  <data name="Sivaganga" xml:space="preserve"><value>சிவகங்கை</value></data>
+  <data name="Tenkasi" xml:space="preserve"><value>தென்காசி</value></data>
+  <data name="Thanjavur" xml:space="preserve"><value>தஞ்சாவூர்</value></data>
+  <data name="Theni" xml:space="preserve"><value>தேனி</value></data>
+  <data name="Thoothukudi" xml:space="preserve"><value>தூத்துக்குடி</value></data>
+  <data name="Tiruchirappalli" xml:space="preserve"><value>திருச்சிராப்பள்ளி</value></data>
+  <data name="Tirunelveli" xml:space="preserve"><value>திருநெல்வேலி</value></data>
+  <data name="Tirupathur" xml:space="preserve"><value>திருப்பத்தூர்</value></data>
+  <data name="Tiruppur" xml:space="preserve"><value>திருப்பூர்</value></data>
+  <data name="Tiruvallur" xml:space="preserve"><value>திருவள்ளூர்</value></data>
+  <data name="Tiruvannamalai" xml:space="preserve"><value>திருவண்ணாமலை</value></data>
+  <data name="Tiruvarur" xml:space="preserve"><value>திருவாரூர்</value></data>
+  <data name="Vellore" xml:space="preserve"><value>வேலூர்</value></data>
+  <data name="Villupuram" xml:space="preserve"><value>விழுப்புரம்</value></data>
+  <data name="Virudhunagar" xml:space="preserve"><value>விருதுநகர்</value></data>
+
+  <!-- price units -->
+  <data name="per day" xml:space="preserve"><value>நாளுக்கு</value></data>
+  <data name="per hour" xml:space="preserve"><value>மணிக்கு</value></data>
+  <data name="per kg" xml:space="preserve"><value>கிலோவுக்கு</value></data>
+  <data name="per quintal" xml:space="preserve"><value>குவிண்டாலுக்கு</value></data>
+  <data name="per head" xml:space="preserve"><value>ஒன்றுக்கு</value></data>
+  <data name="per litre" xml:space="preserve"><value>லிட்டருக்கு</value></data>
+  <data name="kg" xml:space="preserve"><value>கிலோ</value></data>
+  <data name="quintal" xml:space="preserve"><value>குவிண்டால்</value></data>
+  <data name="head" xml:space="preserve"><value>எண்ணிக்கை</value></data>
+  <data name="litres" xml:space="preserve"><value>லிட்டர்</value></data>
+  <data name="days" xml:space="preserve"><value>நாட்கள்</value></data>
+  <data name="hours" xml:space="preserve"><value>மணிநேரம்</value></data>
+
+  <!-- booking and listing status -->
+  <data name="Pending" xml:space="preserve"><value>நிலுவையில்</value></data>
+  <data name="Approved" xml:space="preserve"><value>அங்கீகரிக்கப்பட்டது</value></data>
+  <data name="Rejected" xml:space="preserve"><value>நிராகரிக்கப்பட்டது</value></data>
+  <data name="Cancelled" xml:space="preserve"><value>ரத்து செய்யப்பட்டது</value></data>
+  <data name="Completed" xml:space="preserve"><value>நிறைவடைந்தது</value></data>
+  <data name="Active" xml:space="preserve"><value>செயலில்</value></data>
+  <data name="Sold" xml:space="preserve"><value>விற்கப்பட்டது</value></data>
+  <data name="Removed" xml:space="preserve"><value>நீக்கப்பட்டது</value></data>
+
+  <!-- gender -->
+  <data name="Male" xml:space="preserve"><value>ஆண்</value></data>
+  <data name="Female" xml:space="preserve"><value>பெண்</value></data>
+  <data name="Other" xml:space="preserve"><value>மற்றவை</value></data>
+
+  <!-- form labels -->
+  <data name="Search" xml:space="preserve"><value>தேடுக</value></data>
+  <data name="Category" xml:space="preserve"><value>வகை</value></data>
+  <data name="Product" xml:space="preserve"><value>பொருள்</value></data>
+  <data name="Task" xml:space="preserve"><value>பணி</value></data>
+  <data name="District" xml:space="preserve"><value>மாவட்டம்</value></data>
+  <data name="Town or village" xml:space="preserve"><value>நகரம் அல்லது கிராமம்</value></data>
+  <data name="Town or taluk" xml:space="preserve"><value>நகரம் அல்லது வட்டம்</value></data>
+  <data name="Village" xml:space="preserve"><value>கிராமம்</value></data>
+  <data name="Town" xml:space="preserve"><value>நகரம்</value></data>
+  <data name="Location" xml:space="preserve"><value>இடம்</value></data>
+  <data name="Min price" xml:space="preserve"><value>குறைந்தபட்ச விலை</value></data>
+  <data name="Max price" xml:space="preserve"><value>அதிகபட்ச விலை</value></data>
+  <data name="Available from" xml:space="preserve"><value>எப்போதிருந்து</value></data>
+  <data name="Available to" xml:space="preserve"><value>எப்போது வரை</value></data>
+  <data name="Sort by" xml:space="preserve"><value>வரிசைப்படுத்து</value></data>
+  <data name="Price" xml:space="preserve"><value>விலை</value></data>
+  <data name="Price unit" xml:space="preserve"><value>விலை அலகு</value></data>
+  <data name="Title" xml:space="preserve"><value>தலைப்பு</value></data>
+  <data name="Description" xml:space="preserve"><value>விவரம்</value></data>
+  <data name="Quantity" xml:space="preserve"><value>அளவு</value></data>
+  <data name="Quantity available" xml:space="preserve"><value>கிடைக்கும் அளவு</value></data>
+  <data name="Years of experience" xml:space="preserve"><value>அனுபவ ஆண்டுகள்</value></data>
+  <data name="Skills" xml:space="preserve"><value>திறன்கள்</value></data>
+  <!-- "From date", not "From", which would collide with the lowercase "from" used
+       between a quantity and a price on the category rows. -->
+  <data name="From date" xml:space="preserve"><value>தொடக்க நாள்</value></data>
+  <data name="To date" xml:space="preserve"><value>முடிவு நாள்</value></data>
+  <data name="Photos" xml:space="preserve"><value>புகைப்படங்கள்</value></data>
+  <data name="Message" xml:space="preserve"><value>செய்தி</value></data>
+  <data name="Full name" xml:space="preserve"><value>முழுப் பெயர்</value></data>
+  <data name="Gender" xml:space="preserve"><value>பாலினம்</value></data>
+  <data name="Phone number" xml:space="preserve"><value>தொலைபேசி எண்</value></data>
+
+  <!-- buttons and actions -->
+  <data name="New" xml:space="preserve"><value>புதியது</value></data>
+  <data name="Publish listing" xml:space="preserve"><value>பட்டியலை வெளியிடு</value></data>
+  <data name="Add a listing" xml:space="preserve"><value>பட்டியலைச் சேர்</value></data>
+  <data name="Save" xml:space="preserve"><value>சேமி</value></data>
+  <data name="Cancel" xml:space="preserve"><value>ரத்து செய்</value></data>
+  <data name="Delete" xml:space="preserve"><value>நீக்கு</value></data>
+  <data name="Edit" xml:space="preserve"><value>திருத்து</value></data>
+  <data name="Approve" xml:space="preserve"><value>அங்கீகரி</value></data>
+  <data name="Decline" xml:space="preserve"><value>நிராகரி</value></data>
+  <data name="Availability" xml:space="preserve"><value>கிடைக்கும் நாட்கள்</value></data>
+  <data name="View and book" xml:space="preserve"><value>முன்பதிவு செய்</value></data>
+  <data name="Request these dates" xml:space="preserve"><value>இந்த நாட்களைக் கோருக</value></data>
+  <data name="Block these dates" xml:space="preserve"><value>இந்த நாட்களைத் தடு</value></data>
+  <data name="Sign in to book" xml:space="preserve"><value>முன்பதிவு செய்ய உள்நுழைக</value></data>
+  <data name="Browse equipment" xml:space="preserve"><value>உபகரணங்களைப் பார்க்க</value></data>
+  <data name="Create an account" xml:space="preserve"><value>கணக்கை உருவாக்குக</value></data>
+  <data name="Report" xml:space="preserve"><value>புகார் அளி</value></data>
+  <data name="Apply" xml:space="preserve"><value>பயன்படுத்து</value></data>
+  <data name="Clear" xml:space="preserve"><value>அழி</value></data>
+  <data name="Choose..." xml:space="preserve"><value>தேர்ந்தெடுக்கவும்...</value></data>
+  <data name="Any" xml:space="preserve"><value>அனைத்தும்</value></data>
+  <data name="Name or description" xml:space="preserve"><value>பெயர் அல்லது விவரம்</value></data>
+  <data name="Town, village" xml:space="preserve"><value>நகரம், கிராமம்</value></data>
+  <data name="Newest" xml:space="preserve"><value>புதியவை முதலில்</value></data>
+  <data name="Price, low to high" xml:space="preserve"><value>விலை, குறைவு முதல் அதிகம்</value></data>
+  <data name="Price, high to low" xml:space="preserve"><value>விலை, அதிகம் முதல் குறைவு</value></data>
+  <data name="Name" xml:space="preserve"><value>பெயர்</value></data>
+
+  <!-- small words used on cards and rows -->
+  <data name="from" xml:space="preserve"><value>முதல்</value></data>
+  <data name="available" xml:space="preserve"><value>கிடைக்கிறது</value></data>
+  <data name="No photo" xml:space="preserve"><value>புகைப்படம் இல்லை</value></data>
+  <data name="year" xml:space="preserve"><value>ஆண்டு</value></data>
+  <data name="years" xml:space="preserve"><value>ஆண்டுகள்</value></data>
+  <data name="your district" xml:space="preserve"><value>உங்கள் மாவட்டம்</value></data>
+  <!-- The calendar legend and the right-hand note on an empty category row are
+       both tight: short phrases, not literal ones. -->
+  <data name="booked or unavailable" xml:space="preserve"><value>பிடிக்கப்பட்டது</value></data>
+  <data name="none listed yet" xml:space="preserve"><value>எதுவும் இல்லை</value></data>
+  <data name="nobody registered yet" xml:space="preserve"><value>யாரும் இல்லை</value></data>
+  <data name="none on offer" xml:space="preserve"><value>எதுவும் இல்லை</value></data>
+  <data name="machine" xml:space="preserve"><value>இயந்திரம்</value></data>
+  <data name="machines" xml:space="preserve"><value>இயந்திரங்கள்</value></data>
+  <data name="person" xml:space="preserve"><value>நபர்</value></data>
+  <data name="people" xml:space="preserve"><value>நபர்கள்</value></data>
+  <data name="seller" xml:space="preserve"><value>விற்பனையாளர்</value></data>
+  <data name="sellers" xml:space="preserve"><value>விற்பனையாளர்கள்</value></data>
+  <data name="A member" xml:space="preserve"><value>ஒரு உறுப்பினர்</value></data>
+
+  <!-- messages the controllers set -->
+  <data name="Request sent. The owner will accept or decline it." xml:space="preserve"><value>கோரிக்கை அனுப்பப்பட்டது. உரிமையாளர் அதை ஏற்பார் அல்லது மறுப்பார்.</value></data>
+  <data name="Those dates are now marked unavailable." xml:space="preserve"><value>அந்த நாட்கள் இப்போது கிடைக்காது எனக் குறிக்கப்பட்டுள்ளன.</value></data>
+  <data name="Booking confirmed. Any clashing requests were declined." xml:space="preserve"><value>முன்பதிவு உறுதி செய்யப்பட்டது. முரண்படும் கோரிக்கைகள் நிராகரிக்கப்பட்டன.</value></data>
+  <data name="Those dates are already booked. Try different dates." xml:space="preserve"><value>அந்த நாட்கள் ஏற்கனவே முன்பதிவு செய்யப்பட்டுள்ளன. வேறு நாட்களை முயலுங்கள்.</value></data>
+  <data name="This request is already approved." xml:space="preserve"><value>இந்தக் கோரிக்கை ஏற்கனவே அங்கீகரிக்கப்பட்டுள்ளது.</value></data>
+  <data name="Listing removed." xml:space="preserve"><value>பட்டியல் நீக்கப்பட்டது.</value></data>
+  <data name="Listing updated." xml:space="preserve"><value>பட்டியல் புதுப்பிக்கப்பட்டது.</value></data>
+  <data name="Profile saved." xml:space="preserve"><value>சுயவிவரம் சேமிக்கப்பட்டது.</value></data>
+  <data name="Thank you. An administrator will look at it." xml:space="preserve"><value>நன்றி. ஒரு நிர்வாகி இதைப் பார்வையிடுவார்.</value></data>
+
+  <!-- home page -->
+  <data name="Equipment, labour and a marketplace, in one place." xml:space="preserve"><value>உபகரணம், தொழிலாளர், சந்தை — எல்லாம் ஒரே இடத்தில்.</value></data>
+  <data name="Rent a tractor for three days, find a harvesting crew for the weekend, or sell what you grew — without ringing round the district to find out who has what." xml:space="preserve"><value>மூன்று நாட்களுக்கு டிராக்டர் வாடகைக்கு எடுங்கள், வார இறுதிக்கு அறுவடைக் குழுவைக் கண்டறியுங்கள், அல்லது நீங்கள் விளைவித்ததை விற்றுவிடுங்கள் — யாரிடம் என்ன இருக்கிறது என்று மாவட்டம் முழுவதும் தொலைபேசிச் சுற்ற வேண்டியதில்லை.</value></data>
+  <data name="Tractors, harvesters, tillers and pumps listed by the people who own them. Pick your dates and send a request; the owner accepts or declines." xml:space="preserve"><value>டிராக்டர்கள், அறுவடை இயந்திரங்கள், உழவு இயந்திரங்கள், நீர் இறைப்பான்கள் — அவற்றின் சொந்தக்காரர்களே பட்டியலிடுகிறார்கள். உங்கள் நாட்களைத் தேர்ந்தெடுத்துக் கோரிக்கை அனுப்புங்கள்; உரிமையாளர் ஏற்பார் அல்லது மறுப்பார்.</value></data>
+  <data name="Vegetables, fruit, grain and livestock, with the seller's asking price shown against the reference price for that category and district." xml:space="preserve"><value>காய்கறி, பழம், தானியம், கால்நடை — விற்பனையாளர் கேட்கும் விலையுடன், அந்த வகைக்கும் மாவட்டத்துக்கும் உரிய நிர்ணய விலையும் சேர்த்துக் காட்டப்படுகிறது.</value></data>
+  <data name="Workers and crews list their skills, daily wage and the districts they cover. Request them for the days you need." xml:space="preserve"><value>தொழிலாளர்களும் குழுக்களும் தங்கள் திறன், நாள் கூலி, செல்லும் மாவட்டங்கள் ஆகியவற்றைப் பட்டியலிடுகிறார்கள். உங்களுக்குத் தேவையான நாட்களுக்கு அவர்களைக் கோருங்கள்.</value></data>
+  <data name="Find equipment" xml:space="preserve"><value>உபகரணம் தேடு</value></data>
+  <data name="Browse produce" xml:space="preserve"><value>விளைபொருட்களைப் பார்க்க</value></data>
+  <data name="Find workers" xml:space="preserve"><value>தொழிலாளர்களைத் தேடு</value></data>
+
+  <!-- the standing explanations on each category index -->
+  <data name="Choose the machine you need, then compare what is free on your dates." xml:space="preserve"><value>உங்களுக்குத் தேவையான இயந்திரத்தைத் தேர்ந்தெடுத்து, நீங்கள் குறிப்பிட்ட நாட்களில் எவை கிடைக்கின்றன என ஒப்பிட்டுப் பாருங்கள்.</value></data>
+  <data name="Choose the work you need, then compare the people who do it." xml:space="preserve"><value>உங்களுக்குத் தேவையான வேலையைத் தேர்ந்தெடுத்து, அதைச் செய்யும் நபர்களை ஒப்பிட்டுப் பாருங்கள்.</value></data>
+  <data name="Choose what you are buying, then compare what is on offer across every district." xml:space="preserve"><value>நீங்கள் வாங்க விரும்புவதைத் தேர்ந்தெடுத்து, எல்லா மாவட்டங்களிலும் கிடைப்பவற்றை ஒப்பிட்டுப் பாருங்கள்.</value></data>
+
+  <data name="Each machine is booked separately, so an owner with two tractors can hire out both on the same days." xml:space="preserve"><value>ஒவ்வொரு இயந்திரமும் தனித்தனியாக முன்பதிவு செய்யப்படுகிறது. எனவே இரண்டு டிராக்டர்கள் உள்ள உரிமையாளர் ஒரே நாட்களில் இரண்டையும் வாடகைக்கு விடலாம்.</value></data>
+  <data name="A worker may register for several tasks. Whichever task you book them for, those dates are taken across all of them — one person, one calendar." xml:space="preserve"><value>ஒரு தொழிலாளர் பல பணிகளுக்குப் பதிவு செய்யலாம். நீங்கள் எந்தப் பணிக்கு அவரை முன்பதிவு செய்தாலும், அந்த நாட்கள் அவரது எல்லாப் பணிகளிலும் பிடிக்கப்பட்டுவிடும் — ஒரு நபர், ஒரே நாட்காட்டி.</value></data>
+  <data name="Quantities and prices are totalled separately for each unit, because head and kilos cannot be added together." xml:space="preserve"><value>அளவுகளும் விலைகளும் ஒவ்வொரு அலகுக்கும் தனித்தனியாகக் கூட்டப்படுகின்றன. ஏனெனில் எண்ணிக்கையையும் கிலோவையும் ஒன்றாகக் கூட்ட முடியாது.</value></data>
+
+  <!-- Count lines. {0} is the number; Tamil puts the noun and the trailing phrase
+       in its own order around it. -->
+  <data name="{0} people registered for this task" xml:space="preserve"><value>இந்தப் பணிக்கு {0} நபர்கள் பதிவு செய்துள்ளனர்</value></data>
+  <data name="{0} people" xml:space="preserve"><value>{0} நபர்கள்</value></data>
+  <data name="{0} listings across all districts" xml:space="preserve"><value>எல்லா மாவட்டங்களிலும் சேர்த்து {0} பட்டியல்கள்</value></data>
+  <data name="{0} machines available" xml:space="preserve"><value>{0} இயந்திரங்கள் கிடைக்கின்றன</value></data>
+  <data name="{0} matches" xml:space="preserve"><value>{0} பொருத்தங்கள்</value></data>
+  <data name="{0} listings" xml:space="preserve"><value>{0} பட்டியல்கள்</value></data>
+  <data name="(showing the first 100)" xml:space="preserve"><value>(முதல் 100 மட்டும் காட்டப்படுகிறது)</value></data>
+
+  <data name="Best match first: people in {0}, then the lowest wage, then the most experience." xml:space="preserve"><value>சிறந்த பொருத்தம் முதலில்: {0} மாவட்டத்தைச் சேர்ந்தவர்கள், பிறகு குறைந்த கூலி, பிறகு அதிக அனுபவம்.</value></data>
+  <data name="Best match first: the lowest wage, then the most experience." xml:space="preserve"><value>சிறந்த பொருத்தம் முதலில்: குறைந்த கூலி, பிறகு அதிக அனுபவம்.</value></data>
+  <data name="Location is matched by district and town, not by distance." xml:space="preserve"><value>இடம் மாவட்டம் மற்றும் நகரத்தின் அடிப்படையில் பொருத்தப்படுகிறது, தூரத்தின் அடிப்படையில் அல்ல.</value></data>
+
+  <data name="Nobody matched those filters." xml:space="preserve"><value>அந்த வடிகட்டிகளுக்கு யாரும் பொருந்தவில்லை.</value></data>
+  <data name="Nothing matched those filters." xml:space="preserve"><value>அந்த வடிகட்டிகளுக்கு எதுவும் பொருந்தவில்லை.</value></data>
+  <data name="Clear filters" xml:space="preserve"><value>வடிகட்டிகளை அழி</value></data>
+
+  <data name="Nothing is listed here yet." xml:space="preserve"><value>இங்கே இதுவரை எதுவும் பட்டியலிடப்படவில்லை.</value></data>
+  <data name="Be the first" xml:space="preserve"><value>முதலில் சேருங்கள்</value></data>
+
+  <!-- listing detail -->
+  <data name="Previous" xml:space="preserve"><value>முந்தையது</value></data>
+  <data name="Next" xml:space="preserve"><value>அடுத்தது</value></data>
+  <data name="listed {0}" xml:space="preserve"><value>{0} அன்று பட்டியலிடப்பட்டது</value></data>
+  <data name="Experience" xml:space="preserve"><value>அனுபவம்</value></data>
+  <data name="See every task {0} does" xml:space="preserve"><value>{0} செய்யும் எல்லாப் பணிகளையும் பார்க்க</value></data>
+  <data name="this worker" xml:space="preserve"><value>இந்தத் தொழிலாளர்</value></data>
+  <data name="Listed by" xml:space="preserve"><value>பட்டியலிட்டவர்</value></data>
+  <data name="Contact" xml:space="preserve"><value>தொடர்பு</value></data>
+  <data name="Sign in to see contact details" xml:space="preserve"><value>தொடர்பு விவரங்களைப் பார்க்க உள்நுழைக</value></data>
+  <data name="Edit this listing" xml:space="preserve"><value>இந்தப் பட்டியலைத் திருத்து</value></data>
+  <data name="Against the reference price" xml:space="preserve"><value>நிர்ணய விலையுடன் ஒப்பிடுகையில்</value></data>
+  <data name="About the same as the reference price of ₹{0} {1}." xml:space="preserve"><value>₹{0} {1} என்ற நிர்ணய விலையுடன் கிட்டத்தட்ட சமம்.</value></data>
+  <data name="{0}% above the reference price of ₹{1} {2}." xml:space="preserve"><value>₹{1} {2} என்ற நிர்ணய விலையை விட {0}% அதிகம்.</value></data>
+  <data name="{0}% below the reference price of ₹{1} {2}." xml:space="preserve"><value>₹{1} {2} என்ற நிர்ணய விலையை விட {0}% குறைவு.</value></data>
+  <data name="{0} in {1}, as of {2}." xml:space="preserve"><value>{1} மாவட்டத்தில் {0}, {2} நிலவரப்படி.</value></data>
+  <data name="This is the nearest figure on record." xml:space="preserve"><value>பதிவில் உள்ள மிக அருகிலுள்ள புள்ளிவிவரம் இதுவே.</value></data>
+  <data name="Prices vary with variety, quality and date; this is a reference only, not a valuation." xml:space="preserve"><value>ரகம், தரம், தேதிக்கு ஏற்ப விலை மாறும்; இது ஒரு வழிகாட்டி மட்டுமே, மதிப்பீடு அல்ல.</value></data>
+
+  <!-- booking panel and calendar -->
+  <data name="This calendar covers every task this worker does, not just this one." xml:space="preserve"><value>இந்த நாட்காட்டி இந்தத் தொழிலாளரின் எல்லாப் பணிகளையும் உள்ளடக்கும், இந்தப் பணியை மட்டுமல்ல.</value></data>
+  <data name="One calendar for every task. Booked for any of them, booked for all." xml:space="preserve"><value>எல்லாப் பணிகளுக்கும் ஒரே நாட்காட்டி. ஏதேனும் ஒன்றுக்கு முன்பதிவானால், எல்லாவற்றுக்கும் முன்பதிவானது.</value></data>
+  <data name="Mark dates when this is not available." xml:space="preserve"><value>இது கிடைக்காத நாட்களைக் குறியிடுங்கள்.</value></data>
+  <data name="Mark days you cannot work. Applies to every task." xml:space="preserve"><value>நீங்கள் வேலை செய்ய முடியாத நாட்களைக் குறியிடுங்கள். இது எல்லாப் பணிகளுக்கும் பொருந்தும்.</value></data>
+  <data name="Reason (optional)" xml:space="preserve"><value>காரணம் (விருப்பத்தேர்வு)</value></data>
+  <data name="This listing is closed." xml:space="preserve"><value>இந்தப் பட்டியல் மூடப்பட்டுள்ளது.</value></data>
+  <data name="This worker is not taking bookings." xml:space="preserve"><value>இந்தத் தொழிலாளர் தற்போது முன்பதிவு ஏற்கவில்லை.</value></data>
+  <data name="What you need it for" xml:space="preserve"><value>எதற்காகத் தேவை</value></data>
+  <data name="What the work involves" xml:space="preserve"><value>வேலை என்ன என்பதைக் குறிப்பிடுங்கள்</value></data>
+  <data name="The end date is the day you hand it back, and is not charged." xml:space="preserve"><value>முடிவு நாள் என்பது நீங்கள் திருப்பித் தரும் நாள்; அதற்குக் கட்டணம் இல்லை.</value></data>
+  <data name="The end date is the day after the last day worked." xml:space="preserve"><value>முடிவு நாள் என்பது கடைசியாக வேலை செய்த நாளுக்கு அடுத்த நாள்.</value></data>
+  <data name="Registered for" xml:space="preserve"><value>பதிவு செய்த பணிகள்</value></data>
+  <data name="{0} years of experience." xml:space="preserve"><value>{0} ஆண்டுகள் அனுபவம்.</value></data>
+  <data name="Worker" xml:space="preserve"><value>தொழிலாளர்</value></data>
+  <data name="Closed" xml:space="preserve"><value>மூடப்பட்டது</value></data>
+  <data name="day" xml:space="preserve"><value>நாள்</value></data>
+
+  <!-- weekday initials. Separate keys: Tuesday and Thursday share "T" in English. -->
+  <data name="Mon1" xml:space="preserve"><value>தி</value></data>
+  <data name="Tue1" xml:space="preserve"><value>செ</value></data>
+  <data name="Wed1" xml:space="preserve"><value>பு</value></data>
+  <data name="Thu1" xml:space="preserve"><value>வி</value></data>
+  <data name="Fri1" xml:space="preserve"><value>வெ</value></data>
+  <data name="Sat1" xml:space="preserve"><value>ச</value></data>
+  <data name="Sun1" xml:space="preserve"><value>ஞா</value></data>
+
+  <!-- bookings list -->
+  <data name="My requests" xml:space="preserve"><value>எனது கோரிக்கைகள்</value></data>
+  <data name="Requests for my listings" xml:space="preserve"><value>எனது பட்டியல்களுக்கான கோரிக்கைகள்</value></data>
+  <data name="My booking requests" xml:space="preserve"><value>எனது முன்பதிவுக் கோரிக்கைகள்</value></data>
+  <data name="Nothing here yet." xml:space="preserve"><value>இங்கே இதுவரை எதுவும் இல்லை.</value></data>
+  <data name="Listing" xml:space="preserve"><value>பட்டியல்</value></data>
+  <data name="Listings" xml:space="preserve"><value>பட்டியல்கள்</value></data>
+  <data name="Bookings" xml:space="preserve"><value>முன்பதிவுகள்</value></data>
+  <data name="Requested by" xml:space="preserve"><value>கோரியவர்</value></data>
+  <data name="Owner" xml:space="preserve"><value>உரிமையாளர்</value></data>
+  <data name="Dates" xml:space="preserve"><value>நாட்கள்</value></data>
+  <data name="Status" xml:space="preserve"><value>நிலை</value></data>
+  <data name="Action" xml:space="preserve"><value>நடவடிக்கை</value></data>
+  <data name="You (blocked)" xml:space="preserve"><value>நீங்கள் (தடுத்தது)</value></data>
+  <data name="Mark complete" xml:space="preserve"><value>முடிந்ததெனக் குறி</value></data>
+  <data name="Cancel this booking?" xml:space="preserve"><value>இந்த முன்பதிவை ரத்து செய்யவா?</value></data>
+
+  <!-- profile -->
+  <data name="My profile" xml:space="preserve"><value>எனது சுயவிவரம்</value></data>
+  <data name="Your district is how people find you and how labour results are ordered, so it is worth keeping accurate." xml:space="preserve"><value>உங்கள் மாவட்டத்தை வைத்தே மக்கள் உங்களைக் கண்டறிகிறார்கள், தொழிலாளர் முடிவுகளும் அதன் அடிப்படையிலேயே வரிசைப்படுத்தப்படுகின்றன. எனவே அதைச் சரியாக வைத்திருங்கள்.</value></data>
+  <data name="Shown to signed-in members on your listings." xml:space="preserve"><value>உங்கள் பட்டியல்களில் உள்நுழைந்த உறுப்பினர்களுக்குக் காட்டப்படும்.</value></data>
+  <data name="Prefer not to say" xml:space="preserve"><value>சொல்ல விரும்பவில்லை</value></data>
+  <data name="Optional. Shown on your labour profile if you give it." xml:space="preserve"><value>விருப்பத்தேர்வு. நீங்கள் அளித்தால் உங்கள் தொழிலாளர் சுயவிவரத்தில் காட்டப்படும்.</value></data>
+  <data name="Where you are" xml:space="preserve"><value>நீங்கள் இருக்கும் இடம்</value></data>
+  <data name="Save profile" xml:space="preserve"><value>சுயவிவரத்தைச் சேமி</value></data>
+  <data name="Change password or email" xml:space="preserve"><value>கடவுச்சொல் அல்லது மின்னஞ்சலை மாற்று</value></data>
+  <data name="Your profile has been saved." xml:space="preserve"><value>உங்கள் சுயவிவரம் சேமிக்கப்பட்டது.</value></data>
+
+  <!-- notifications -->
+  <data name="Mark all read ({0})" xml:space="preserve"><value>அனைத்தையும் படித்ததாகக் குறி ({0})</value></data>
+  <data name="Nothing yet. Booking requests and decisions show up here." xml:space="preserve"><value>இதுவரை எதுவும் இல்லை. முன்பதிவுக் கோரிக்கைகளும் முடிவுகளும் இங்கே தோன்றும்.</value></data>
+
+  <!-- report a listing -->
+  <data name="Report this listing" xml:space="preserve"><value>இந்தப் பட்டியல் குறித்துப் புகார் அளி</value></data>
+  <data name="What is wrong with it?" xml:space="preserve"><value>இதில் என்ன தவறு?</value></data>
+  <data name="Misleading description, wrong photos, not a real listing..." xml:space="preserve"><value>தவறான விவரம், பொருந்தாத புகைப்படங்கள், உண்மையான பட்டியல் அல்ல...</value></data>
+  <data name="Send report" xml:space="preserve"><value>புகாரை அனுப்பு</value></data>
+  <data name="Thank you. An administrator will look at this listing." xml:space="preserve"><value>நன்றி. ஒரு நிர்வாகி இந்தப் பட்டியலைப் பரிசீலிப்பார்.</value></data>
+
+  <!-- listing form -->
+  <data name="Headline for this task" xml:space="preserve"><value>இந்தப் பணிக்கான தலைப்பு</value></data>
+  <data name="e.g. Canal and drip irrigation, 10 years" xml:space="preserve"><value>எ.கா. வாய்க்கால் மற்றும் சொட்டு நீர்ப்பாசனம், 10 ஆண்டுகள்</value></data>
+  <data name="e.g. Nattu tomatoes, picked this morning" xml:space="preserve"><value>எ.கா. நாட்டுத் தக்காளி, இன்று காலை பறித்தது</value></data>
+  <data name="e.g. Mahindra 575 DI tractor" xml:space="preserve"><value>எ.கா. மஹிந்திரா 575 DI டிராக்டர்</value></data>
+  <data name="Farmers see your name from your profile, not this line. Describe the work, not yourself." xml:space="preserve"><value>விவசாயிகள் உங்கள் சுயவிவரத்தில் உள்ள பெயரையே பார்ப்பார்கள், இந்த வரியை அல்ல. உங்களைப் பற்றி அல்லாமல், வேலையைப் பற்றி எழுதுங்கள்.</value></data>
+  <data name="Skills and the work you take on" xml:space="preserve"><value>திறன்களும் நீங்கள் ஏற்கும் வேலையும்</value></data>
+  <data name="Up to 5 photos, 4 MB each. JPG, PNG or WebP." xml:space="preserve"><value>அதிகபட்சம் 5 புகைப்படங்கள், ஒவ்வொன்றும் 4 MB வரை. JPG, PNG அல்லது WebP.</value></data>
+  <data name="Remove photo" xml:space="preserve"><value>புகைப்படத்தை நீக்கு</value></data>
+  <data name="Edit listing" xml:space="preserve"><value>பட்டியலைத் திருத்து</value></data>
+  <data name="Save changes" xml:space="preserve"><value>மாற்றங்களைச் சேமி</value></data>
+  <data name="Mark as sold to keep it visible but closed." xml:space="preserve"><value>தெரியும்படி ஆனால் மூடப்பட்டதாக வைக்க "விற்கப்பட்டது" எனக் குறியிடுங்கள்.</value></data>
+  <data name="Remove listing" xml:space="preserve"><value>பட்டியலை நீக்கு</value></data>
+  <data name="Remove this listing? Past bookings are kept." xml:space="preserve"><value>இந்தப் பட்டியலை நீக்கவா? கடந்த முன்பதிவுகள் அப்படியே இருக்கும்.</value></data>
+  <data name="The listing is hidden; its booking history is preserved." xml:space="preserve"><value>பட்டியல் மறைக்கப்படும்; அதன் முன்பதிவு வரலாறு பாதுகாக்கப்படும்.</value></data>
+
+  <!-- market prices -->
+  <data name="Reference market prices" xml:space="preserve"><value>நிர்ணய சந்தை விலைகள்</value></data>
+  <data name="Add a price" xml:space="preserve"><value>விலையைச் சேர்</value></data>
+  <data name="These are figures recorded by the administrator, not forecasts. Prices vary with location, variety, quality and date — treat them as a reference point, not a valuation." xml:space="preserve"><value>இவை நிர்வாகி பதிவு செய்த புள்ளிவிவரங்கள், முன்கணிப்புகள் அல்ல. இடம், ரகம், தரம், தேதிக்கு ஏற்ப விலை மாறும் — இதை ஒரு வழிகாட்டியாக மட்டுமே எடுத்துக்கொள்ளுங்கள், மதிப்பீடாக அல்ல.</value></data>
+  <data name="Filter" xml:space="preserve"><value>வடிகட்டு</value></data>
+  <data name="No reference prices recorded for that selection." xml:space="preserve"><value>அந்தத் தேர்வுக்கு நிர்ணய விலை எதுவும் பதிவாகவில்லை.</value></data>
+  <data name="Source" xml:space="preserve"><value>ஆதாரம்</value></data>
+  <data name="As of" xml:space="preserve"><value>நிலவரம்</value></data>
+  <data name="Remove this reference price?" xml:space="preserve"><value>இந்த நிர்ணய விலையை நீக்கவா?</value></data>
+  <data name="Add reference price" xml:space="preserve"><value>நிர்ணய விலையைச் சேர்</value></data>
+  <data name="Edit reference price" xml:space="preserve"><value>நிர்ணய விலையைத் திருத்து</value></data>
+  <data name="Where this figure came from" xml:space="preserve"><value>இந்தப் புள்ளிவிவரம் எங்கிருந்து வந்தது</value></data>
+  <data name="Reference price saved." xml:space="preserve"><value>நிர்ணய விலை சேமிக்கப்பட்டது.</value></data>
+  <data name="Reference price removed." xml:space="preserve"><value>நிர்ணய விலை நீக்கப்பட்டது.</value></data>
+
+  <!-- administration -->
+  <data name="Administration" xml:space="preserve"><value>நிர்வாகம்</value></data>
+  <data name="Administrator" xml:space="preserve"><value>நிர்வாகி</value></data>
+  <data name="Users" xml:space="preserve"><value>பயனர்கள்</value></data>
+  <data name="Pending bookings" xml:space="preserve"><value>நிலுவை முன்பதிவுகள்</value></data>
+  <data name="Reference prices" xml:space="preserve"><value>நிர்ணய விலைகள்</value></data>
+  <data name="Open reports" xml:space="preserve"><value>திறந்த புகார்கள்</value></data>
+  <data name="Email" xml:space="preserve"><value>மின்னஞ்சல்</value></data>
+  <data name="Categories" xml:space="preserve"><value>வகைகள்</value></data>
+  <data name="Accounts, their districts and what they have listed." xml:space="preserve"><value>கணக்குகள், அவற்றின் மாவட்டங்கள், அவர்கள் பட்டியலிட்டவை.</value></data>
+  <data name="Equipment, produce and labour categories used across the site." xml:space="preserve"><value>தளம் முழுவதும் பயன்படும் உபகரணம், விளைபொருள், தொழிலாளர் வகைகள்.</value></data>
+  <data name="Figures sellers compare their asking price against." xml:space="preserve"><value>விற்பனையாளர்கள் தங்கள் விலையை ஒப்பிட்டுப் பார்க்கும் புள்ளிவிவரங்கள்.</value></data>
+  <data name="Reported listings" xml:space="preserve"><value>புகார் அளிக்கப்பட்ட பட்டியல்கள்</value></data>
+  <data name="Listings members have flagged for review." xml:space="preserve"><value>உறுப்பினர்கள் பரிசீலனைக்காகக் குறியிட்ட பட்டியல்கள்.</value></data>
+  <data name="All bookings" xml:space="preserve"><value>அனைத்து முன்பதிவுகள்</value></data>
+  <data name="Every request across the platform." xml:space="preserve"><value>தளம் முழுவதிலும் உள்ள ஒவ்வொரு கோரிக்கையும்.</value></data>
+  <data name="(latest {0})" xml:space="preserve"><value>(சமீபத்திய {0})</value></data>
+  <data name="Raised" xml:space="preserve"><value>கோரிய நாள்</value></data>
+  <data name="Nothing has been reported." xml:space="preserve"><value>எதற்கும் புகார் அளிக்கப்படவில்லை.</value></data>
+  <data name="Reason" xml:space="preserve"><value>காரணம்</value></data>
+  <data name="Reported by" xml:space="preserve"><value>புகார் அளித்தவர்</value></data>
+  <data name="When" xml:space="preserve"><value>எப்போது</value></data>
+  <data name="Dismiss" xml:space="preserve"><value>நிராகரி</value></data>
+  <data name="Remove this listing from the site?" xml:space="preserve"><value>இந்தப் பட்டியலைத் தளத்திலிருந்து நீக்கவா?</value></data>
+  <data name="Report closed and the listing removed." xml:space="preserve"><value>புகார் முடிக்கப்பட்டது, பட்டியல் நீக்கப்பட்டது.</value></data>
+  <data name="Report closed, listing left as it is." xml:space="preserve"><value>புகார் முடிக்கப்பட்டது, பட்டியல் அப்படியே உள்ளது.</value></data>
+  <data name="Category removed." xml:space="preserve"><value>வகை நீக்கப்பட்டது.</value></data>
+  <data name="Applies to" xml:space="preserve"><value>எதற்குப் பொருந்தும்</value></data>
+  <data name="Group" xml:space="preserve"><value>குழு</value></data>
+  <data name="Usual unit" xml:space="preserve"><value>வழக்கமான அலகு</value></data>
+  <data name="None" xml:space="preserve"><value>எதுவும் இல்லை</value></data>
+  <data name="Add" xml:space="preserve"><value>சேர்</value></data>
+  <data name="Remove" xml:space="preserve"><value>நீக்கு</value></data>
+  <data name="Remove {0}?" xml:space="preserve"><value>{0} நீக்கவா?</value></data>
+  <data name="e.g. Sheep" xml:space="preserve"><value>எ.கா. செம்மறி ஆடு</value></data>
+  <data name="e.g. Livestock" xml:space="preserve"><value>எ.கா. கால்நடைகள்</value></data>
+  <data name="Enter the name in English. Tamil comes from the translation file." xml:space="preserve"><value>பெயரை ஆங்கிலத்தில் உள்ளிடுங்கள். தமிழ் மொழிபெயர்ப்புக் கோப்பிலிருந்து வரும்.</value></data>
+  <data name="no Tamil yet" xml:space="preserve"><value>தமிழ் இன்னும் இல்லை</value></data>
+
+  <!-- error page -->
+  <data name="You asked for" xml:space="preserve"><value>நீங்கள் கேட்டது</value></data>
+  <data name="Reference" xml:space="preserve"><value>குறிப்பு எண்</value></data>
+  <data name="quote this if you report it." xml:space="preserve"><value>புகார் அளித்தால் இதைக் குறிப்பிடுங்கள்.</value></data>
+  <data name="That address does not match anything on the site. The listing may have been removed by its owner, or the link may be out of date." xml:space="preserve"><value>அந்த முகவரி தளத்தில் எதனுடனும் பொருந்தவில்லை. பட்டியலை அதன் உரிமையாளர் நீக்கியிருக்கலாம், அல்லது இணைப்பு காலாவதியாகியிருக்கலாம்.</value></data>
+  <data name="You are signed in, but this belongs to somebody else. You can only edit listings and bookings on your own account." xml:space="preserve"><value>நீங்கள் உள்நுழைந்துள்ளீர்கள், ஆனால் இது வேறொருவருக்குச் சொந்தமானது. உங்கள் கணக்கில் உள்ள பட்டியல்களையும் முன்பதிவுகளையும் மட்டுமே திருத்த முடியும்.</value></data>
+  <data name="This page is only available to members." xml:space="preserve"><value>இந்தப் பக்கம் உறுப்பினர்களுக்கு மட்டுமே.</value></data>
+  <data name="The browser sent something the server could not read. Reloading the page usually clears it." xml:space="preserve"><value>உலாவி அனுப்பியதை சேவையகத்தால் படிக்க முடியவில்லை. பக்கத்தை மீண்டும் ஏற்றினால் பொதுவாகச் சரியாகிவிடும்.</value></data>
+  <data name="The fault is logged. Nothing you did caused it, and trying again shortly is usually enough." xml:space="preserve"><value>இந்தப் பிழை பதிவு செய்யப்பட்டுள்ளது. இது உங்களால் ஏற்பட்டதல்ல; சிறிது நேரம் கழித்து மீண்டும் முயன்றால் போதும்.</value></data>
+  <data name="The page could not be shown." xml:space="preserve"><value>பக்கத்தைக் காட்ட முடியவில்லை.</value></data>
+  <data name="Wrong kind of request" xml:space="preserve"><value>தவறான வகைக் கோரிக்கை</value></data>
+  <data name="That address does not accept this sort of request." xml:space="preserve"><value>அந்த முகவரி இந்த வகைக் கோரிக்கையை ஏற்காது.</value></data>
+  <data name="That file is too large" xml:space="preserve"><value>அந்தக் கோப்பு மிகப் பெரியது</value></data>
+  <data name="Photos must be 4 MB or smaller." xml:space="preserve"><value>புகைப்படங்கள் 4 MB அல்லது அதற்குக் குறைவாக இருக்க வேண்டும்.</value></data>
+
+  <data name="Page not found" xml:space="preserve"><value>பக்கம் கிடைக்கவில்லை</value></data>
+  <data name="Not yours to open" xml:space="preserve"><value>இதைத் திறக்க உங்களுக்கு அனுமதி இல்லை</value></data>
+  <data name="Please sign in" xml:space="preserve"><value>உள்நுழையவும்</value></data>
+  <data name="That request did not make sense" xml:space="preserve"><value>அந்தக் கோரிக்கை புரியவில்லை</value></data>
+  <data name="Something went wrong at our end" xml:space="preserve"><value>எங்கள் தரப்பில் ஏதோ தவறு நேர்ந்துள்ளது</value></data>
+  <data name="Something went wrong" xml:space="preserve"><value>ஏதோ தவறு நேர்ந்துள்ளது</value></data>
+</root>

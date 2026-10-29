@@ -1,0 +1,12 @@
+﻿@using AgriConnect
+@using AgriConnect.Models
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.Localization
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, AgriConnect
+
+@* One localizer for every view. Keys are the English text itself, so a view still
+   reads as prose and an untranslated key renders as correct English rather than as
+   an identifier. IHtmlLocalizer, not IStringLocalizer, so a translation containing
+   markup is not double-escaped. *@
+@inject IHtmlLocalizer<SharedResource> L

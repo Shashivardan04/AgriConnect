@@ -1,0 +1,102 @@
+﻿@using System.Globalization
+@{
+    var uiCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isTamil = uiCulture == "ta";
+    // Round-trip the visitor to the page they were on, so switching language does
+    // not also lose their place or their search filters.
+    var here = Context.Request.Path + Context.Request.QueryString;
+}
+<!DOCTYPE html>
+<html lang="@uiCulture">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - AgriConnect</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+<body class="d-flex flex-column min-vh-100 @(isTamil ? "lang-ta" : "")">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">AgriConnect</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Listings" asp-action="Index" asp-route-type="equipment">@L["Equipment"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Listings" asp-action="Index" asp-route-type="marketplace">@L["Marketplace"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Listings" asp-action="Index" asp-route-type="labour">@L["Labour"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="MarketPrices" asp-action="Index">@L["Market prices"]</a>
+                    </li>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin" asp-action="Index">@L["Admin"]</a>
+                        </li>
+                    }
+                </ul>
+
+                @* Two words, always both shown, the current one marked. A dropdown
+                   would hide Tamil from exactly the person who cannot read the
+                   English label on it. *@
+                <form class="d-flex align-items-center me-3" method="post"
+                      asp-controller="Culture" asp-action="Set">
+                    <input type="hidden" name="returnUrl" value="@here"/>
+                    <button type="submit" name="culture" value="en"
+                            class="btn btn-sm btn-link text-decoration-none px-1 @(isTamil ? "text-white-50" : "text-white fw-semibold")">
+                        English
+                    </button>
+                    <span class="text-white-50">|</span>
+                    <button type="submit" name="culture" value="ta"
+                            class="btn btn-sm btn-link text-decoration-none px-1 @(isTamil ? "text-white fw-semibold" : "text-white-50")"
+                            lang="ta">
+                        தமிழ்
+                    </button>
+                </form>
+
+                <partial name="_LoginPartial"/>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main role="main" class="container py-4 flex-grow-1">
+    @if (TempData["Message"] is string message)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @L[message]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] is string error)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @L[error]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @RenderBody()
+</main>
+
+<footer class="border-top text-muted py-3 mt-auto">
+    <div class="container small d-flex justify-content-between">
+        <span>&copy; @DateTime.Now.Year AgriConnect</span>
+        <a asp-controller="Home" asp-action="Privacy" class="text-muted">@L["Privacy"]</a>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

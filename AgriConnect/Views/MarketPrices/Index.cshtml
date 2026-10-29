@@ -1,0 +1,78 @@
+@model List<MarketPrice>
+@{
+    ViewData["Title"] = L["Market prices"].Value;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h1 class="h4 mb-0">@L["Reference market prices"]</h1>
+    @if (User.IsInRole("Administrator"))
+    {
+        <a class="btn btn-sm btn-success" asp-action="Edit">@L["Add a price"]</a>
+    }
+</div>
+
+<p class="text-muted small">
+    @L["These are figures recorded by the administrator, not forecasts. Prices vary with location, variety, quality and date — treat them as a reference point, not a valuation."]
+</p>
+
+<form method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-6 col-md-3">
+        <label class="form-label small mb-1">@L["District"]</label>
+        <select name="district" asp-items="ViewBag.Districts" class="form-select form-select-sm">
+            <option value="">@L["Any"]</option>
+        </select>
+    </div>
+    <div class="col-6 col-md-3">
+        <label class="form-label small mb-1">@L["Category"]</label>
+        <select name="categoryId" asp-items="ViewBag.Categories" class="form-select form-select-sm">
+            <option value="">@L["Any"]</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-sm btn-outline-success">@L["Filter"]</button>
+    </div>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-light border">@L["No reference prices recorded for that selection."]</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>@L["Category"]</th><th>@L["District"]</th><th class="text-end">@L["Price"]</th>
+                <th>@L["Source"]</th><th>@L["As of"]</th>
+                @if (User.IsInRole("Administrator")) { <th></th> }
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@L[p.Category?.Name ?? ""]</td>
+                    <td>@L[p.District]</td>
+                    <td class="text-end">₹@p.Price.ToString("N2") <span class="text-muted small">@L[ListingSlug.UnitLabel(p.Unit)]</span></td>
+                    @* The source is typed by the administrator, so it is shown as
+                       entered rather than looked up. *@
+                    <td class="small text-muted">@p.Source</td>
+                    <td class="small">@Dates.Full(p.AsOfDate)</td>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@p.Id">@L["Edit"]</a>
+                            <form asp-action="Delete" method="post" class="d-inline"
+                                  onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Remove this reference price?"].Value)));">
+                                <input type="hidden" name="id" value="@p.Id"/>
+                                <button class="btn btn-sm btn-outline-danger">@L["Delete"]</button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

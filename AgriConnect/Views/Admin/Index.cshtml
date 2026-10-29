@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = L["Administration"].Value;
+    var counts = (Dictionary<string, int>)ViewBag.Counts;
+}
+
+<h1 class="h4 mb-4">@L["Administration"]</h1>
+
+<div class="row g-3 mb-4">
+    @foreach (var (label, value) in counts)
+    {
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body py-3">
+                    <div class="h4 mb-0">@value</div>
+                    @* The controller supplies these labels in English; they are keys
+                       like any other string. *@
+                    <div class="small text-muted">@L[label]</div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="list-group">
+    <a class="list-group-item list-group-item-action" asp-action="Users">
+        <strong>@L["Users"]</strong>
+        <div class="small text-muted">@L["Accounts, their districts and what they have listed."]</div>
+    </a>
+    <a class="list-group-item list-group-item-action" asp-action="Categories">
+        <strong>@L["Categories"]</strong>
+        <div class="small text-muted">@L["Equipment, produce and labour categories used across the site."]</div>
+    </a>
+    <a class="list-group-item list-group-item-action" asp-controller="MarketPrices" asp-action="Index">
+        <strong>@L["Reference market prices"]</strong>
+        <div class="small text-muted">@L["Figures sellers compare their asking price against."]</div>
+    </a>
+    <a class="list-group-item list-group-item-action" asp-action="Reports">
+        <strong>@L["Reported listings"]</strong>
+        <div class="small text-muted">@L["Listings members have flagged for review."]</div>
+    </a>
+    <a class="list-group-item list-group-item-action" asp-action="Bookings">
+        <strong>@L["All bookings"]</strong>
+        <div class="small text-muted">@L["Every request across the platform."]</div>
+    </a>
+</div>

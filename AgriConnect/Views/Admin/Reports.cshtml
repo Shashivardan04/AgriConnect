@@ -1,0 +1,69 @@
+@model List<ListingReport>
+@{ ViewData["Title"] = L["Reported listings"].Value; }
+
+<a class="small" asp-action="Index">&larr; @L["Administration"]</a>
+<h1 class="h4 my-3">@L["Reported listings"]</h1>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-light border">@L["Nothing has been reported."]</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>@L["Listing"]</th><th>@L["Reason"]</th><th>@L["Reported by"]</th>
+                <th>@L["When"]</th><th class="text-end">@L["Action"]</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr class="@(r.Resolved ? "text-muted" : "")">
+                    <td>
+                        @if (r.Listing is not null)
+                        {
+                            <a asp-controller="Listings" asp-action="Details"
+                               asp-route-type="@ListingSlug.From(r.Listing.Type)" asp-route-id="@r.ListingId">
+                                @r.Listing.Title
+                            </a>
+                            @if (r.Listing.Status == ListingStatus.Removed)
+                            {
+                                <span class="badge bg-secondary ms-1">@L["Removed"]</span>
+                            }
+                        }
+                    </td>
+                    @* The reason is what the member wrote, shown as written. *@
+                    <td class="small">@r.Reason</td>
+                    <td class="small">@r.ReportedBy?.FullName</td>
+                    <td class="small">@Dates.Full(r.CreatedAt.ToLocalTime())</td>
+                    <td class="text-end">
+                        @if (r.Resolved)
+                        {
+                            <span class="badge bg-success">@L["Closed"]</span>
+                        }
+                        else
+                        {
+                            <div class="d-flex gap-1 justify-content-end">
+                                <form asp-action="ResolveReport" method="post">
+                                    <input type="hidden" name="id" value="@r.Id"/>
+                                    <input type="hidden" name="removeListing" value="false"/>
+                                    <button class="btn btn-sm btn-outline-secondary">@L["Dismiss"]</button>
+                                </form>
+                                <form asp-action="ResolveReport" method="post"
+                                      onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Remove this listing from the site?"].Value)));">
+                                    <input type="hidden" name="id" value="@r.Id"/>
+                                    <input type="hidden" name="removeListing" value="true"/>
+                                    <button class="btn btn-sm btn-outline-danger">@L["Remove listing"]</button>
+                                </form>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

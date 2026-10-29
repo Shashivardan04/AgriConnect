@@ -1,0 +1,216 @@
+@model List<Listing>
+@{
+    var worker = (ApplicationUser)ViewBag.Worker;
+    var isSelf = (bool)ViewBag.IsSelf;
+    var slug = (string)ViewBag.Slug;
+    var today = DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd");
+
+    ViewData["Title"] = worker.FullName ?? L["Worker"].Value;
+
+    // Village and town are the member's own words; only the district comes from the
+    // fixed list and can be translated.
+    var place = string.Join(", ", new[] { worker.Village, worker.Town, L[worker.District ?? ""].Value }
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+
+    // Any one of this worker's tasks will do: for labour the availability endpoint
+    // resolves to the person, so every task reports the same shared calendar.
+    var anyTaskId = Model[0].Id;
+    var bookable = Model.Where(l => l.Status == ListingStatus.Active).ToList();
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-route-type="@slug">@L["Agricultural labour"]</a></li>
+        <li class="breadcrumb-item active">@worker.FullName</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <h1 class="h4 mb-1">@worker.FullName</h1>
+        <p class="text-muted">
+            @if (worker.Gender is Gender gender)
+            {
+                <text>@L[gender.ToString()] &middot; </text>
+            }
+            @place
+        </p>
+
+        <h6 class="text-muted mt-4">@L["Registered for"]</h6>
+        <div class="list-group mb-3">
+            @foreach (var task in Model)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <a class="fw-semibold text-decoration-none"
+                           asp-action="Details" asp-route-type="@slug" asp-route-id="@task.Id">
+                            @L[task.Category?.Name ?? ""]
+                        </a>
+                        @if (task.Status == ListingStatus.Sold)
+                        {
+                            <span class="badge bg-secondary ms-1">@L["Closed"]</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(task.Title))
+                        {
+                            <div class="small text-muted">@task.Title</div>
+                        }
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-semibold">₹@task.Price.ToString("N0")</div>
+                        <div class="small text-muted">@L[ListingSlug.UnitLabel(task.PriceUnit)]</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.FirstOrDefault(t => t.ExperienceYears is not null) is Listing withYears)
+        {
+            <p class="small text-muted">@L["{0} years of experience.", withYears.ExperienceYears!]</p>
+        }
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h6 class="card-title">@L["Availability"]</h6>
+                <p class="small text-muted">
+                    @L["One calendar for every task. Booked for any of them, booked for all."]
+                </p>
+
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <button class="btn btn-sm btn-link px-1" type="button" id="cal-prev">&lsaquo;</button>
+                    <span class="small fw-semibold" id="cal-label"></span>
+                    <button class="btn btn-sm btn-link px-1" type="button" id="cal-next">&rsaquo;</button>
+                </div>
+                <div class="cal-head mb-1">
+                    <div>@L["Mon1"]</div><div>@L["Tue1"]</div><div>@L["Wed1"]</div><div>@L["Thu1"]</div>
+                    <div>@L["Fri1"]</div><div>@L["Sat1"]</div><div>@L["Sun1"]</div>
+                </div>
+                <div class="cal-grid" id="cal-grid"></div>
+                <div class="small text-muted mt-2">
+                    <span class="badge" style="background:#ffc9c9;color:#842029">&nbsp;</span> @L["booked or unavailable"]
+                </div>
+
+                <hr>
+
+                @if (User.Identity?.IsAuthenticated != true)
+                {
+                    <a class="btn btn-success btn-sm w-100" asp-area="Identity" asp-page="/Account/Login"
+                       asp-route-returnUrl="@Context.Request.Path">@L["Sign in to book"]</a>
+                }
+                else if (isSelf)
+                {
+                    <form asp-controller="Bookings" asp-action="Block" method="post">
+                        <input type="hidden" name="listingId" value="@anyTaskId"/>
+                        <p class="small text-muted mb-2">@L["Mark days you cannot work. Applies to every task."]</p>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="date" name="from" class="form-control form-control-sm" min="@today" required>
+                            </div>
+                            <div class="col-6">
+                                <input type="date" name="to" class="form-control form-control-sm" min="@today" required>
+                            </div>
+                            <div class="col-12">
+                                <input type="text" name="reason" class="form-control form-control-sm" placeholder="@L["Reason (optional)"]">
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm w-100 mt-2" type="submit">@L["Block these dates"]</button>
+                    </form>
+                }
+                else if (bookable.Count == 0)
+                {
+                    <p class="small text-muted mb-0">@L["This worker is not taking bookings."]</p>
+                }
+                else
+                {
+                    <form asp-controller="Bookings" asp-action="RequestDates" method="post">
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label small mb-1">@L["Task"]</label>
+                                <select name="listingId" class="form-select form-select-sm" required>
+                                    @foreach (var task in bookable)
+                                    {
+                                        <option value="@task.Id">
+                                            @L[task.Category?.Name ?? ""] &mdash; ₹@task.Price.ToString("N0") @L[ListingSlug.UnitLabel(task.PriceUnit)]
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small mb-1">@L["From date"]</label>
+                                <input type="date" name="from" class="form-control form-control-sm" min="@today" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small mb-1">@L["To date"]</label>
+                                <input type="date" name="to" class="form-control form-control-sm" min="@today" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small mb-1">@L["Message"]</label>
+                                <textarea name="message" rows="2" class="form-control form-control-sm"
+                                          placeholder="@L["What the work involves"]"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-success btn-sm w-100 mt-2" type="submit">@L["Request these dates"]</button>
+                        <div class="form-text">@L["The end date is the day after the last day worked."]</div>
+                    </form>
+                }
+            </div>
+        </div>
+
+        @if (User.Identity?.IsAuthenticated == true && !string.IsNullOrWhiteSpace(worker.PhoneNumber))
+        {
+            <div class="card shadow-sm">
+                <div class="card-body small">
+                    <strong>@L["Contact"]</strong><br>@worker.PhoneNumber
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    (function () {
+        const grid = document.getElementById('cal-grid');
+        const label = document.getElementById('cal-label');
+        if (!grid) return;
+
+        let booked = new Set();
+        let shown = new Date();
+        shown.setDate(1);
+
+        const iso = d => d.getFullYear() + '-' +
+            String(d.getMonth() + 1).padStart(2, '0') + '-' +
+            String(d.getDate()).padStart(2, '0');
+
+        function render() {
+            const year = shown.getFullYear(), month = shown.getMonth();
+            label.textContent = shown.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+            const lead = (new Date(year, month, 1).getDay() + 6) % 7;
+            const days = new Date(year, month + 1, 0).getDate();
+            const todayIso = iso(new Date());
+
+            let html = '';
+            for (let i = 0; i < lead; i++) html += '<div class="cal-cell is-blank"></div>';
+            for (let d = 1; d <= days; d++) {
+                const key = iso(new Date(year, month, d));
+                const classes = ['cal-cell'];
+                if (booked.has(key)) classes.push('is-booked');
+                else if (key < todayIso) classes.push('is-past');
+                if (key === todayIso) classes.push('is-today');
+                html += `<div class="${classes.join(' ')}">${d}</div>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        document.getElementById('cal-prev').onclick = () => { shown.setMonth(shown.getMonth() - 1); render(); };
+        document.getElementById('cal-next').onclick = () => { shown.setMonth(shown.getMonth() + 1); render(); };
+
+        fetch('@Url.Action("Availability", "Bookings", new { listingId = anyTaskId })')
+            .then(r => r.json())
+            .then(days => { booked = new Set(days); render(); })
+            .catch(render);
+
+        render();
+    })();
+</script>

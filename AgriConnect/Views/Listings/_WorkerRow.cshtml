@@ -1,0 +1,64 @@
+@model Listing
+@{
+    var owners = ViewBag.Owners as Dictionary<string, ApplicationUser>;
+    ApplicationUser? owner = null;
+    owners?.TryGetValue(Model.OwnerId, out owner);
+
+    var near = ViewBag.NearDistrict as string;
+    var isNear = near != null && Model.District == near;
+
+    var place = string.Join(", ", new[] { Model.Village, Model.Town, Model.District }
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+}
+
+<div class="list-group-item">
+    <div class="row align-items-center g-3">
+        <div class="col-md-5">
+            <a class="fw-semibold text-decoration-none"
+               asp-action="Worker" asp-route-type="labour" asp-route-workerId="@Model.OwnerId">
+                @(owner?.FullName ?? L["A member"].Value)
+            </a>
+            @if (isNear)
+            {
+                @* Solid green: this is a highlight and should stand out. See the note
+                   in _CategoryRows.cshtml on why the -subtle classes are avoided. *@
+                <span class="badge bg-success text-white ms-1">@L["your district"]</span>
+            }
+            <div class="small text-muted">
+                @if (owner?.Gender is Gender gender)
+                {
+                    <text>@L[gender.ToString()] &middot; </text>
+                }
+                @place
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Skills))
+            {
+                <div class="small text-muted text-truncate">@Model.Skills</div>
+            }
+        </div>
+
+        <div class="col-6 col-md-2">
+            <div class="fw-semibold">₹@Model.Price.ToString("N0")</div>
+            <div class="small text-muted">@L[ListingSlug.UnitLabel(Model.PriceUnit)]</div>
+        </div>
+
+        <div class="col-6 col-md-2 small">
+            @if (Model.ExperienceYears is int years)
+            {
+                @* Number apart from the noun: Tamil does not inflect it the way
+                   English adds an "s", so the two are translated separately. *@
+                <span>@years @L[years == 1 ? "year" : "years"]</span>
+                @* One key, shared with the detail page: resource names are matched
+                   without case, so "experience" and "Experience" cannot both exist. *@
+                <div class="text-muted">@L["Experience"]</div>
+            }
+        </div>
+
+        <div class="col-md-3 text-md-end">
+            <a class="btn btn-sm btn-success"
+               asp-action="Details" asp-route-type="labour" asp-route-id="@Model.Id">
+                @L["View and book"]
+            </a>
+        </div>
+    </div>
+</div>

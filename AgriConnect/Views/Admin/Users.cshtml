@@ -1,0 +1,34 @@
+@model List<AgriConnect.Controllers.AdminUserRow>
+@{ ViewData["Title"] = L["Users"].Value; }
+
+<a class="small" asp-action="Index">&larr; @L["Administration"]</a>
+<h1 class="h4 my-3">@L["Users"] <span class="text-muted fs-6">(@Model.Count)</span></h1>
+
+<div class="table-responsive">
+    <table class="table table-sm align-middle">
+        <thead class="table-light">
+        <tr>
+            <th>@L["Email"]</th><th>@L["Name"]</th><th>@L["District"]</th>
+            <th class="text-end">@L["Listings"]</th><th class="text-end">@L["Bookings"]</th><th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Email</td>
+                <td>@u.FullName</td>
+                <td class="small">@L[u.District ?? ""]</td>
+                <td class="text-end">@u.Listings</td>
+                <td class="text-end">@u.Bookings</td>
+                <td class="text-end">
+                    @if (u.IsAdministrator)
+                    {
+                        <span class="badge bg-dark">@L["Administrator"]</span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

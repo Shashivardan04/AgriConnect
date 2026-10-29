@@ -1,0 +1,154 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* ---------------------------------------------------------------------------
+   Tamil. _Layout puts .lang-ta on <body> when the UI culture is ta.
+
+   Shipped locally rather than linked from fonts.googleapis.com: the container
+   has no outbound network, so a CDN link fails and the browser falls back to
+   whatever the operating system has - which renders at a different weight and
+   apparent size from the Latin beside it. That mismatch is the thing this font
+   exists to fix, so letting it fail open would defeat the point. 50 KB, loaded
+   only on a Tamil page. Licence and subset: wwwroot/fonts/README.md
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Noto Sans Tamil";
+  src: url("/fonts/noto-sans-tamil.woff2") format("woff2");
+  /* One variable file covers the whole range, so no second request for bold. */
+  font-weight: 400 600;
+  font-style: normal;
+  /* swap, not block: the page must stay readable in the fallback face while
+     50 KB arrives, rather than showing nothing at all. */
+  font-display: swap;
+  unicode-range: U+0964-0965, U+0B82-0BFA, U+200C-200D, U+20B9, U+25CC;
+}
+
+body.lang-ta {
+  font-family: "Noto Sans Tamil", "Nirmala UI", "Latha", "Tamil Sangam MN",
+               "Lohit Tamil", sans-serif;
+
+  /* Tamil sets marks above and below the line, so the 1.5 that suits Latin
+     crowds them together. This is what makes a Tamil page feel cramped, far
+     more than the type size does. */
+  line-height: 1.7;
+
+  /* A small nudge only. The instinct is to go bigger because Tamil reads
+     smaller at the same point size, but Tamil also runs about 40% longer than
+     the same English sentence - so size is exactly the wrong lever, and
+     overshooting here is what pushes text out of buttons and badges. */
+  font-size: 1.02rem;
+}
+
+/* .badge and .btn-sm pin line-height tight enough to clip the marks that sit
+   under a Tamil glyph. */
+.lang-ta .badge {
+  line-height: 1.4;
+  white-space: normal;
+}
+
+/* Tamil has no capitals, so text-transform does nothing - but the wide tracking
+   that goes with a small-caps heading still spreads the letters apart. */
+.lang-ta .text-uppercase,
+.lang-ta .cal-head {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* "List equipment" becomes "உபகரணத்தைப் பட்டியலிடு". Let it wrap rather than
+   run out of its box. */
+.lang-ta .btn,
+.lang-ta .nav-link,
+.lang-ta .breadcrumb-item {
+  white-space: normal;
+}
+
+/* A flex child will not shrink below its content width unless told it may, so
+   a long Tamil label in one column pushes the whole row sideways instead of
+   wrapping inside its own column. This is the overflow people actually see. */
+.lang-ta .row > [class*="col"],
+.lang-ta .d-flex > * {
+  min-width: 0;
+}
+
+/* The category rows put the name on the left and the counts and prices on the
+   right of one flex line. In Tamil both sides are longer, so give the right
+   side room to fall onto its own line instead of squeezing the name. */
+.lang-ta .list-group-item .text-end {
+  text-align: left !important;
+}
+
+/* The worker rows right-align their button on wide screens. With a wrapped
+   Tamil label that reads as ragged, so keep it left with the rest of the row. */
+.lang-ta .text-md-end {
+  text-align: left !important;
+}
+
+/* Tamil words are long and many are unbreakable, so a narrow column can still
+   be overrun. Allow a break inside a word as a last resort rather than letting
+   it escape the card. */
+.lang-ta .card-title,
+.lang-ta .list-group-item,
+.lang-ta .table td,
+.lang-ta .table th {
+  overflow-wrap: anywhere;
+}
+
+/* Listing images: fixed boxes so a grid of mixed-aspect photos stays aligned. */
+.listing-thumb {
+  height: 170px;
+  object-fit: cover;
+}
+
+.listing-hero {
+  height: 340px;
+  object-fit: cover;
+}
+
+.thumb-sm {
+  height: 72px;
+  width: 72px;
+  object-fit: cover;
+}
+
+/* Availability calendar (phase 5). */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  border-radius: .2rem;
+  background: #f1f3f5;
+}
+
+.cal-cell.is-blank { background: transparent; }
+.cal-cell.is-past { color: #adb5bd; background: #f8f9fa; }
+.cal-cell.is-booked { background: #ffc9c9; color: #842029; }
+.cal-cell.is-today { outline: 2px solid #198754; }
+
+.cal-head {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  font-size: .7rem;
+  text-transform: uppercase;
+  color: #868e96;
+  text-align: center;
+}

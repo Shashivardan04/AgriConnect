@@ -1,0 +1,107 @@
+@model List<Listing>
+@{
+    var slug = (string)ViewBag.Slug;
+    var type = (ListingType)ViewBag.ListingType;
+    var filter = (ListingSearch)ViewBag.Filter;
+    var isLabour = type == ListingType.Labour;
+    var isProduce = type == ListingType.Produce;
+    var task = ViewBag.Category as Category;
+    var near = ViewBag.NearDistrict as string;
+
+    var heading = task is not null ? L[task.Name].Value : L[ListingSlug.Heading(type)].Value;
+    ViewData["Title"] = heading;
+
+    // The count line, as one key per sentence rather than a number glued to a noun
+    // glued to a trailing phrase. Tamil puts those pieces in a different order and
+    // inflects the noun, so only the whole sentence can be translated.
+    var summary = (isLabour, isProduce, task is not null, filter.AnyFilter) switch
+    {
+        (true, _, true, _) => "{0} people registered for this task",
+        (true, _, false, _) => "{0} people",
+        (_, true, true, _) => "{0} listings across all districts",
+        (false, false, true, _) => "{0} machines available",
+        (_, _, false, true) => "{0} matches",
+        _ => "{0} listings"
+    };
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" asp-route-type="@slug">@L[ListingSlug.Heading(type)]</a>
+        </li>
+        @if (task?.Group is not null)
+        {
+            <li class="breadcrumb-item text-muted">@L[task.Group]</li>
+        }
+        <li class="breadcrumb-item active">@(task is not null ? L[task.Name] : L["Search"])</li>
+    </ol>
+</nav>
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-0">@heading</h1>
+        <p class="text-muted mb-0">
+            @L[summary, Model.Count]
+            @if (Model.Count == 100) { <text>@L["(showing the first 100)"]</text> }
+        </p>
+    </div>
+    <a class="btn btn-success" asp-action="Create" asp-route-type="@slug">
+        @L[ListingSlug.AddAction(type)]
+    </a>
+</div>
+
+<partial name="_SearchForm" model="filter"/>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-light border text-center py-5">
+        @if (filter.AnyFilter)
+        {
+            <p class="mb-2">
+                @L[isLabour ? "Nobody matched those filters." : "Nothing matched those filters."]
+            </p>
+            <a class="btn btn-outline-secondary btn-sm" asp-action="Index" asp-route-type="@slug">@L["Clear filters"]</a>
+        }
+        else
+        {
+            <p class="mb-2">@L["Nothing is listed here yet."]</p>
+            <a class="btn btn-outline-success btn-sm" asp-action="Create" asp-route-type="@slug">@L["Be the first"]</a>
+        }
+    </div>
+}
+else if (isLabour)
+{
+    @if (string.IsNullOrWhiteSpace(filter.Sort))
+    {
+        @* Two whole sentences rather than one assembled around an optional clause.
+           The district name is substituted in, which is all a translator needs to
+           move; the surrounding words are theirs to order. *@
+        <p class="form-text mt-0 mb-2">
+            @if (near is not null)
+            {
+                @L["Best match first: people in {0}, then the lowest wage, then the most experience.", L[near].Value]
+            }
+            else
+            {
+                @L["Best match first: the lowest wage, then the most experience."]
+            }
+            @L["Location is matched by district and town, not by distance."]
+        </p>
+    }
+    <div class="list-group">
+        @foreach (var listing in Model)
+        {
+            <partial name="_WorkerRow" model="listing"/>
+        }
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var listing in Model)
+        {
+            <partial name="_Card" model="listing"/>
+        }
+    </div>
+}

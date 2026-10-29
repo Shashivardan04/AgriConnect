@@ -1,0 +1,124 @@
+@model List<Category>
+@{ ViewData["Title"] = L["Categories"].Value; }
+
+<a class="small" asp-action="Index">&larr; @L["Administration"]</a>
+<h1 class="h4 my-3">@L["Categories"]</h1>
+
+<form asp-action="AddCategory" method="post" class="card card-body bg-light border mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-3">
+            <label class="form-label small mb-1">@L["Name"]</label>
+            @* Stored and typed in English: it is the key the Tamil translation is
+               looked up by, so a name entered in Tamil could never be translated. *@
+            <input name="name" class="form-control form-control-sm" placeholder="@L["e.g. Sheep"]" required>
+            <div class="form-text">@L["Enter the name in English. Tamil comes from the translation file."]</div>
+        </div>
+        <div class="col-6 col-md-3">
+            <label class="form-label small mb-1">@L["Applies to"]</label>
+            <select name="listingType" id="listingType" class="form-select form-select-sm">
+                @foreach (var t in Enum.GetValues<ListingType>())
+                {
+                    <option value="@((int)t)">@L[ListingSlug.Heading(t)]</option>
+                }
+            </select>
+        </div>
+
+        @* Marketplace products sit under a group and are sold in a usual unit.
+           Equipment and labour categories are a flat list, so these stay hidden. *@
+        <div class="col-6 col-md-3 produce-only d-none">
+            <label class="form-label small mb-1">@L["Group"]</label>
+            <input name="group" class="form-control form-control-sm" list="groups"
+                   placeholder="@L["e.g. Livestock"]">
+            <datalist id="groups">
+                @foreach (var g in Model.Where(c => c.Group is not null).Select(c => c.Group).Distinct())
+                {
+                    <option value="@g"></option>
+                }
+            </datalist>
+        </div>
+        <div class="col-6 col-md-2 produce-only d-none">
+            <label class="form-label small mb-1">@L["Usual unit"]</label>
+            <select name="suggestedUnit" class="form-select form-select-sm">
+                <option value="">@L["None"]</option>
+                @foreach (var u in Enum.GetValues<PriceUnit>())
+                {
+                    <option value="@((int)u)">@L[ListingSlug.UnitLabel(u)]</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-auto">
+            <button class="btn btn-sm btn-success">@L["Add"]</button>
+        </div>
+    </div>
+</form>
+
+@foreach (var typeGroup in Model.GroupBy(c => c.ListingType))
+{
+    <h6 class="text-muted mt-4">@L[ListingSlug.Heading(typeGroup.Key)]</h6>
+
+    @foreach (var group in typeGroup.GroupBy(c => c.Group))
+    {
+        @if (group.Key is not null)
+        {
+            <div class="small text-uppercase text-muted mt-3 mb-1">@L[group.Key]</div>
+        }
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <tbody>
+                @foreach (var c in group)
+                {
+                    var translated = L[c.Name].Value;
+                    <tr>
+                        <td>
+                            @c.Name
+                            @* The English is the stored value and the lookup key, so it
+                               leads. The translation sits beside it, and its absence is
+                               the one thing this page can usefully show an
+                               administrator about a category. *@
+                            @if (translated != c.Name)
+                            {
+                                <span class="text-muted small ms-2">@translated</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-muted border ms-2">@L["no Tamil yet"]</span>
+                            }
+                        </td>
+                        <td class="small text-muted">
+                            @if (c.SuggestedUnit is PriceUnit unit)
+                            {
+                                @L[ListingSlug.UnitLabel(unit)]
+                            }
+                        </td>
+                        <td class="text-end">
+                            @* Serialised, not pasted: a category name with an apostrophe
+                               in it would otherwise close the JavaScript string. *@
+                            <form asp-action="DeleteCategory" method="post" class="d-inline"
+                                  onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Remove {0}?", c.Name].Value)));">
+                                <input type="hidden" name="id" value="@c.Id"/>
+                                <button class="btn btn-sm btn-outline-danger">@L["Remove"]</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+<script>
+    (function () {
+        const type = document.getElementById('listingType');
+        const produceOnly = document.querySelectorAll('.produce-only');
+        const produceValue = '@((int)ListingType.Produce)';
+
+        function sync() {
+            produceOnly.forEach(el => el.classList.toggle('d-none', type.value !== produceValue));
+        }
+
+        type.addEventListener('change', sync);
+        sync();
+    })();
+</script>

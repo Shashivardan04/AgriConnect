@@ -1,0 +1,140 @@
+@model Listing
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@{
+    var isOwner = User.Identity?.IsAuthenticated == true
+                  && Model.OwnerId == UserManager.GetUserId(User);
+    var today = DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd");
+}
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h6 class="card-title">@L["Availability"]</h6>
+
+        @if (Model.Type == ListingType.Labour)
+        {
+            <p class="small text-muted mb-2">
+                @L["This calendar covers every task this worker does, not just this one."]
+            </p>
+        }
+
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <button class="btn btn-sm btn-link px-1" type="button" id="cal-prev">&lsaquo;</button>
+            <span class="small fw-semibold" id="cal-label"></span>
+            <button class="btn btn-sm btn-link px-1" type="button" id="cal-next">&rsaquo;</button>
+        </div>
+        @* Weekday initials. Separate keys because Tuesday and Thursday share "T" in
+           English and must not share a translation. *@
+        <div class="cal-head mb-1">
+            <div>@L["Mon1"]</div><div>@L["Tue1"]</div><div>@L["Wed1"]</div><div>@L["Thu1"]</div>
+            <div>@L["Fri1"]</div><div>@L["Sat1"]</div><div>@L["Sun1"]</div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="small text-muted mt-2">
+            <span class="badge" style="background:#ffc9c9;color:#842029">&nbsp;</span> @L["booked or unavailable"]
+        </div>
+
+        <hr>
+
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <a class="btn btn-success btn-sm w-100" asp-area="Identity" asp-page="/Account/Login"
+               asp-route-returnUrl="@Context.Request.Path">@L["Sign in to book"]</a>
+        }
+        else if (isOwner)
+        {
+            <form asp-controller="Bookings" asp-action="Block" method="post">
+                <input type="hidden" name="listingId" value="@Model.Id"/>
+                <p class="small text-muted mb-2">@L["Mark dates when this is not available."]</p>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="date" name="from" class="form-control form-control-sm" min="@today" required>
+                    </div>
+                    <div class="col-6">
+                        <input type="date" name="to" class="form-control form-control-sm" min="@today" required>
+                    </div>
+                    <div class="col-12">
+                        <input type="text" name="reason" class="form-control form-control-sm" placeholder="@L["Reason (optional)"]">
+                    </div>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm w-100 mt-2" type="submit">@L["Block these dates"]</button>
+            </form>
+        }
+        else if (Model.Status != ListingStatus.Active)
+        {
+            <p class="small text-muted mb-0">@L["This listing is closed."]</p>
+        }
+        else
+        {
+            <form asp-controller="Bookings" asp-action="RequestDates" method="post">
+                <input type="hidden" name="listingId" value="@Model.Id"/>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label small mb-1">@L["From date"]</label>
+                        <input type="date" name="from" class="form-control form-control-sm" min="@today" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small mb-1">@L["To date"]</label>
+                        <input type="date" name="to" class="form-control form-control-sm" min="@today" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small mb-1">@L["Message"]</label>
+                        <textarea name="message" rows="2" class="form-control form-control-sm"
+                                  placeholder="@L["What you need it for"]"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-success btn-sm w-100 mt-2" type="submit">@L["Request these dates"]</button>
+                <div class="form-text">@L["The end date is the day you hand it back, and is not charged."]</div>
+            </form>
+        }
+    </div>
+</div>
+
+@* Inline, not in a Scripts section: a partial cannot define one. Vanilla JS with
+   no library dependency, and it runs after the elements it needs. *@
+<script>
+        (function () {
+            const grid = document.getElementById('cal-grid');
+            const label = document.getElementById('cal-label');
+            if (!grid) return;
+
+            let booked = new Set();
+            let shown = new Date();
+            shown.setDate(1);
+
+            const iso = d => d.getFullYear() + '-' +
+                String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                String(d.getDate()).padStart(2, '0');
+
+            function render() {
+                const year = shown.getFullYear(), month = shown.getMonth();
+                label.textContent = shown.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+                // Monday-first: JS getDay() is Sunday-first, so shift by one.
+                const lead = (new Date(year, month, 1).getDay() + 6) % 7;
+                const days = new Date(year, month + 1, 0).getDate();
+                const todayIso = iso(new Date());
+
+                let html = '';
+                for (let i = 0; i < lead; i++) html += '<div class="cal-cell is-blank"></div>';
+                for (let d = 1; d <= days; d++) {
+                    const key = iso(new Date(year, month, d));
+                    const classes = ['cal-cell'];
+                    if (booked.has(key)) classes.push('is-booked');
+                    else if (key < todayIso) classes.push('is-past');
+                    if (key === todayIso) classes.push('is-today');
+                    html += `<div class="${classes.join(' ')}">${d}</div>`;
+                }
+                grid.innerHTML = html;
+            }
+
+            document.getElementById('cal-prev').onclick = () => { shown.setMonth(shown.getMonth() - 1); render(); };
+            document.getElementById('cal-next').onclick = () => { shown.setMonth(shown.getMonth() + 1); render(); };
+
+            fetch('@Url.Action("Availability", "Bookings", new { listingId = Model.Id })')
+                .then(r => r.json())
+                .then(days => { booked = new Set(days); render(); })
+                .catch(render);
+
+            render();
+        })();
+</script>

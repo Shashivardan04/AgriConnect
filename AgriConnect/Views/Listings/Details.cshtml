@@ -1,0 +1,177 @@
+@model Listing
+@{
+    var slug = (string)ViewBag.Slug;
+    var canEdit = (bool)ViewBag.CanEdit;
+    ViewData["Title"] = Model.Title;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-route-type="@slug">@L[ListingSlug.Heading(Model.Type)]</a></li>
+        @* The title is the seller's own words and stays as they typed it. *@
+        <li class="breadcrumb-item active">@Model.Title</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        @if (Model.Images.Count > 0)
+        {
+            <div id="photos" class="carousel slide mb-3" data-bs-ride="false">
+                <div class="carousel-inner rounded border">
+                    @for (var i = 0; i < Model.Images.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="~/uploads/@Model.Images[i].FileName" class="d-block w-100 listing-hero" alt="@Model.Title">
+                        </div>
+                    }
+                </div>
+                @if (Model.Images.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#photos" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span><span class="visually-hidden">@L["Previous"]</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#photos" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span><span class="visually-hidden">@L["Next"]</span>
+                    </button>
+                }
+            </div>
+        }
+
+        <h1 class="h4">@Model.Title</h1>
+        <p class="text-muted mb-3">
+            @L[Model.Category?.Name ?? ""] &middot;
+            @L["listed {0}", Dates.Full(Model.CreatedAt.ToLocalTime())]
+            @if (Model.Status == ListingStatus.Sold)
+            {
+                <span class="badge bg-secondary ms-1">@L["Sold"]</span>
+            }
+        </p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p class="mb-4">@Model.Description</p>
+        }
+
+        @if (Model.Type == ListingType.Labour)
+        {
+            <dl class="row small">
+                <dt class="col-sm-3">@L["Task"]</dt>
+                <dd class="col-sm-9">@L[Model.Category?.Name ?? ""]</dd>
+                <dt class="col-sm-3">@L["Skills"]</dt>
+                @* The worker wrote this themselves, so it is shown as written. *@
+                <dd class="col-sm-9">@Model.Skills</dd>
+                <dt class="col-sm-3">@L["Experience"]</dt>
+                <dd class="col-sm-9">@Model.ExperienceYears @L["years"]</dd>
+            </dl>
+            <a class="btn btn-sm btn-outline-secondary"
+               asp-action="Worker" asp-route-type="@slug" asp-route-workerId="@Model.OwnerId">
+                @L["See every task {0} does", Model.Owner?.FullName ?? L["this worker"].Value]
+            </a>
+        }
+        else if (Model.Type == ListingType.Produce)
+        {
+            <dl class="row small">
+                <dt class="col-sm-3">@L["Product"]</dt>
+                <dd class="col-sm-9">@L[Model.Category?.Name ?? ""]</dd>
+                <dt class="col-sm-3">@L["Quantity"]</dt>
+                <dd class="col-sm-9">
+                    @Model.Quantity?.ToString("N0") @L[ListingSlug.QuantityLabel(Model.PriceUnit)]
+                </dd>
+            </dl>
+        }
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <div class="h3 mb-0">₹@Model.Price.ToString("N0")</div>
+                <div class="text-muted mb-3">@L[ListingSlug.UnitLabel(Model.PriceUnit)]</div>
+
+                <dl class="row small mb-0">
+                    <dt class="col-5">@L["Location"]</dt>
+                    <dd class="col-7">
+                        @* Village and town are typed by the member; only the district
+                           comes from the fixed list and can be translated. *@
+                        @string.Join(", ", new[] { Model.Village, Model.Town, L[Model.District].Value }
+                                     .Where(s => !string.IsNullOrWhiteSpace(s)))
+                    </dd>
+                    <dt class="col-5">@L["Listed by"]</dt>
+                    <dd class="col-7">@(Model.Owner?.FullName ?? L["A member"].Value)</dd>
+                    @if (User.Identity?.IsAuthenticated == true && !string.IsNullOrWhiteSpace(Model.Owner?.PhoneNumber))
+                    {
+                        <dt class="col-5">@L["Contact"]</dt>
+                        <dd class="col-7">@Model.Owner.PhoneNumber</dd>
+                    }
+                </dl>
+
+                @if (User.Identity?.IsAuthenticated != true)
+                {
+                    <a class="btn btn-outline-success btn-sm mt-3 w-100"
+                       asp-area="Identity" asp-page="/Account/Login"
+                       asp-route-returnUrl="@Context.Request.Path">@L["Sign in to see contact details"]</a>
+                }
+            </div>
+        </div>
+
+        @if (Model.IsBookable)
+        {
+            <partial name="_BookingPanel" model="Model"/>
+        }
+
+        @if (Model.Type == ListingType.Produce && ViewBag.Reference is MarketPrice reference)
+        {
+            var difference = Model.Price - reference.Price;
+            var percent = reference.Price == 0 ? 0 : difference / reference.Price * 100;
+            var sameDistrict = reference.District == Model.District;
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">@L["Against the reference price"]</h6>
+                    @* Whole sentence with the figures substituted in, rather than
+                       clauses glued together. Tamil orders them differently, and
+                       "above"/"below" cannot be a separate word from what it
+                       qualifies. *@
+                    <p class="mb-1">
+                        @if (Math.Abs(percent) < 1)
+                        {
+                            @L["About the same as the reference price of ₹{0} {1}.",
+                                reference.Price.ToString("N2"),
+                                L[ListingSlug.UnitLabel(reference.Unit)].Value]
+                        }
+                        else
+                        {
+                            <span class="fw-semibold @(difference > 0 ? "text-danger" : "text-success")">
+                                @L[difference > 0
+                                       ? "{0}% above the reference price of ₹{1} {2}."
+                                       : "{0}% below the reference price of ₹{1} {2}.",
+                                    Math.Abs(percent).ToString("N0"),
+                                    reference.Price.ToString("N2"),
+                                    L[ListingSlug.UnitLabel(reference.Unit)].Value]
+                            </span>
+                        }
+                    </p>
+                    <p class="small text-muted mb-0">
+                        @L["{0} in {1}, as of {2}.",
+                            L[reference.Category?.Name ?? ""].Value,
+                            L[reference.District].Value,
+                            Dates.Full(reference.AsOfDate)]
+                        @if (!sameDistrict) { @L["This is the nearest figure on record."] }
+                        @if (!string.IsNullOrWhiteSpace(reference.Source)) { <text>@reference.Source.</text> }
+                        @L["Prices vary with variety, quality and date; this is a reference only, not a valuation."]
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (canEdit)
+        {
+            <a class="btn btn-outline-secondary w-100" asp-action="Edit" asp-route-type="@slug" asp-route-id="@Model.Id">
+                @L["Edit this listing"]
+            </a>
+        }
+        else if (User.Identity?.IsAuthenticated == true)
+        {
+            <partial name="_ReportListing" model="Model"/>
+        }
+    </div>
+</div>

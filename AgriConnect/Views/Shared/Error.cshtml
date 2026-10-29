@@ -1,0 +1,50 @@
+﻿@model ErrorViewModel
+@{
+    var (heading, detail) = Model.Explain();
+    ViewData["Title"] = heading;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body p-4 p-md-5">
+
+                @if (Model.StatusCode is int code)
+                {
+                    <div class="display-5 fw-semibold text-muted mb-2">@code</div>
+                }
+
+                <h1 class="h4">@L[heading]</h1>
+                <p class="text-muted">@L[detail]</p>
+
+                @if (!string.IsNullOrWhiteSpace(Model.OriginalPath))
+                {
+                    <p class="small text-muted mb-0">
+                        @L["You asked for"] <code>@Model.OriginalPath</code>
+                    </p>
+                }
+
+                <hr>
+
+                @* Somewhere to go next. A dead end with no links is how a mistyped
+                   URL turns into a visitor leaving the site. *@
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-success btn-sm" asp-controller="Home" asp-action="Index">@L["Home"]</a>
+                    <a class="btn btn-outline-secondary btn-sm"
+                       asp-controller="Listings" asp-action="Index" asp-route-type="equipment">@L["Equipment"]</a>
+                    <a class="btn btn-outline-secondary btn-sm"
+                       asp-controller="Listings" asp-action="Index" asp-route-type="marketplace">@L["Marketplace"]</a>
+                    <a class="btn btn-outline-secondary btn-sm"
+                       asp-controller="Listings" asp-action="Index" asp-route-type="labour">@L["Labour"]</a>
+                </div>
+
+                @if (Model.ShowRequestId)
+                {
+                    <p class="small text-muted mt-3 mb-0">
+                        @L["Reference"] <code>@Model.RequestId</code> — @L["quote this if you report it."]
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
