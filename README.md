@@ -156,13 +156,13 @@ AgriConnect/
   Resources/
     SharedResource.ta.resx  every Tamil string
   wwwroot/
-    seed-images/          369 licensed photos + credits.json
+    seed-images/          368 licensed photos + credits.json
     uploads/              created at runtime (git-ignored)
     css/ js/ lib/ fonts/
 docs/
   user-guide.md           walkthrough for an end user
   er-diagram.md           entity relationships
-  image-credits.md        author and licence for all 369 photos
+  image-credits.md        author and licence for all 368 photos
 tools/
   fetch-seed-images.ps1   re-download the photo set from Wikimedia Commons
   write-image-credits.ps1 regenerate docs/image-credits.md

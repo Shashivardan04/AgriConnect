@@ -255,7 +255,7 @@ update your connection string to match.
 
 **First page load is very slow**
 It is doing the migration and seeding ~143 members, 265 listings and several hundred
-bookings, and copying 369 photos into `wwwroot/uploads`. Once only.
+bookings, and copying 368 photos into `wwwroot/uploads`. Once only.
 `docker compose logs -f web` shows progress.
 
 **Listing photos are missing / broken images**
@@ -314,7 +314,7 @@ dotnet ef database update                    # apply migrations by hand (startup
 
 ## Replacing the seed photos
 
-The 369 photos in `AgriConnect/wwwroot/seed-images` are Wikimedia Commons images under
+The 368 photos in `AgriConnect/wwwroot/seed-images` are Wikimedia Commons images under
 CC BY, CC BY-SA and public-domain terms — **not this project's own**. Their authors and
 licences are listed in [docs/image-credits.md](docs/image-credits.md), which those
 licences require you to keep. Replace them before using this for anything real.
