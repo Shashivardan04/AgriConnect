@@ -15,6 +15,7 @@ public class ListingsController : Controller
 {
     private const long MaxImageBytes = 4 * 1024 * 1024;
     private const int MaxImagesPerListing = 5;
+    private const int MaxReasonLength = 500;   // ListingReport.Reason
     private static readonly string[] AllowedImageExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
     private readonly ApplicationDbContext _db;
@@ -469,6 +470,12 @@ public class ListingsController : Controller
         {
             TempData["Error"] = "Say what is wrong with the listing.";
         }
+        // Reason is a loose parameter, so its [StringLength] is never checked by
+        // model validation and an over-long one reached the database as a 500.
+        else if (reason.Trim().Length > MaxReasonLength)
+        {
+            TempData["Error"] = "Keep it under 500 characters.";
+        }
         else
         {
             _db.ListingReports.Add(new ListingReport
@@ -546,22 +553,39 @@ public class ListingsController : Controller
     {
         if (images is null || images.Count == 0) return;
 
+        var offered = images.Where(f => f.Length > 0).ToList();
+        if (offered.Count == 0) return;
+
+        // Sift before the quota is applied, not inside the loop after it. Taking the
+        // first five and then discarding the unusable ones spent slots on files that
+        // were never going to be saved, so a good photo further down the list
+        // vanished without a word.
+        var usable = offered.Where(Usable).ToList();
+
         var folder = UploadFolder();
         Directory.CreateDirectory(folder);
 
-        var room = MaxImagesPerListing - listing.Images.Count;
+        var room = Math.Max(MaxImagesPerListing - listing.Images.Count, 0);
 
-        foreach (var file in images.Where(f => f.Length > 0).Take(Math.Max(room, 0)))
+        foreach (var file in usable.Take(room))
         {
             // Trust the extension for routing only, never the caller's filename for the path.
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (!AllowedImageExtensions.Contains(ext) || file.Length > MaxImageBytes) continue;
-
             var name = $"{Guid.NewGuid():N}{ext}";
             await using var stream = System.IO.File.Create(Path.Combine(folder, name));
             await file.CopyToAsync(stream);
 
             listing.Images.Add(new ListingImage { FileName = name });
         }
+
+        // Say so. A photo that is silently dropped looks like the upload worked.
+        if (usable.Count < offered.Count)
+            TempData["Error"] = "Some photos were not added. Use JPG, PNG or WebP, up to 4 MB each.";
+        else if (usable.Count > room)
+            TempData["Error"] = "A listing holds five photos, so the later ones were not added.";
     }
+
+    private static bool Usable(IFormFile file) =>
+        file.Length <= MaxImageBytes
+        && AllowedImageExtensions.Contains(Path.GetExtension(file.FileName).ToLowerInvariant());
 }

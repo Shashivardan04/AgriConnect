@@ -16,6 +16,9 @@ public record BookingResult(bool Ok, string? Error = null, Booking? Booking = nu
 /// </summary>
 public class BookingService
 {
+    /// <summary>Matches the length of the Message column a note is stored in.</summary>
+    public const int MaxNoteLength = 500;
+
     private readonly ApplicationDbContext _db;
 
     public BookingService(ApplicationDbContext db) => _db = db;
@@ -37,7 +40,7 @@ public class BookingService
         if (listing.Status != ListingStatus.Active) return BookingResult.Fail("This listing is not available.");
         if (listing.OwnerId == requesterId) return BookingResult.Fail("This is your own listing.");
 
-        if (Validate(from, to) is string problem) return BookingResult.Fail(problem);
+        if (Validate(from, to, message) is string problem) return BookingResult.Fail(problem);
 
         // A pending request may overlap anything - it only has to be free when the
         // owner approves it. But refusing the obviously-taken dates up front saves
@@ -74,7 +77,7 @@ public class BookingService
         var listing = await _db.Listings.FirstOrDefaultAsync(l => l.Id == listingId);
         if (listing is null) return BookingResult.Fail("That listing no longer exists.");
         if (listing.OwnerId != ownerId) return BookingResult.Fail("Only the owner can block dates.");
-        if (Validate(from, to) is string problem) return BookingResult.Fail(problem);
+        if (Validate(from, to, reason) is string problem) return BookingResult.Fail(problem);
 
         var block = new Booking
         {
@@ -209,9 +212,16 @@ public class BookingService
 
         booking.Status = target;
 
-        var who = isRequester ? booking.Listing.OwnerId : booking.RequesterId;
+        // Tell the other party. An owner block is the owner's own request against
+        // their own listing, so there is nobody else to tell and the notification
+        // would only be the owner informing themselves.
+        var who = booking.RequesterId == booking.Listing.OwnerId
+            ? null
+            : isRequester ? booking.Listing.OwnerId : booking.RequesterId;
+
         var verb = target.ToString().ToLowerInvariant();
-        Notify(who, $"Booking for \"{booking.Listing.Title}\" was {verb}.", "/Bookings/Mine");
+        if (who is not null)
+            Notify(who, $"Booking for \"{booking.Listing.Title}\" was {verb}.", "/Bookings/Mine");
 
         await _db.SaveChangesAsync();
         return BookingResult.Success(booking);
@@ -248,11 +258,17 @@ public class BookingService
                                       && b.Listing.OwnerId == listing.OwnerId)
             : _db.Bookings.Where(b => b.ListingId == listing.Id);
 
-    private static string? Validate(DateOnly from, DateOnly to)
+    private static string? Validate(DateOnly from, DateOnly to, string? note)
     {
         if (to <= from) return "The end date must be after the start date.";
         if (from < DateOnly.FromDateTime(DateTime.Today)) return "Dates cannot start in the past.";
         if (from.AddYears(1) < to) return "A booking cannot run longer than a year.";
+
+        // Booking.Message is a 500-character column and EF does not enforce the
+        // annotation, so without this the insert reaches SQL Server, is refused for
+        // truncation, and the member gets a 500 instead of being told to shorten it.
+        if (note is not null && note.Length > MaxNoteLength) return "Keep it under 500 characters.";
+
         return null;
     }
 

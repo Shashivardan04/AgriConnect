@@ -1,10 +1,17 @@
 ﻿@using System.Globalization
+@using Microsoft.AspNetCore.Diagnostics
 @{
     var uiCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var isTamil = uiCulture == "ta";
+
     // Round-trip the visitor to the page they were on, so switching language does
-    // not also lose their place or their search filters.
-    var here = Context.Request.Path + Context.Request.QueryString;
+    // not also lose their place or their search filters. On an error page the
+    // request has already been re-executed, so Request.Path reads /Home/Error and
+    // switching language from a 404 used to land the visitor back on the 404.
+    var reExecute = Context.Features.Get<IStatusCodeReExecuteFeature>();
+    var here = reExecute is null
+        ? $"{Context.Request.Path}{Context.Request.QueryString}"
+        : $"{reExecute.OriginalPath}{reExecute.OriginalQueryString}";
 }
 <!DOCTYPE html>
 <html lang="@uiCulture">

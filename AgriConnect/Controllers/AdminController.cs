@@ -10,6 +10,8 @@ namespace AgriConnect.Controllers;
 [Authorize(Roles = DbSeeder.AdminRole)]
 public class AdminController : Controller
 {
+    private const int MaxNameLength = 80;   // Category.Name and Category.Group
+
     private readonly ApplicationDbContext _db;
     private readonly UserManager<ApplicationUser> _users;
 
@@ -73,6 +75,10 @@ public class AdminController : Controller
 
         if (name.Length == 0)
             TempData["Error"] = "Enter a category name.";
+        // Both columns hold 80 characters. These arrive as loose parameters, so model
+        // validation never sees them and a longer one reached SQL Server as a 500.
+        else if (name.Length > MaxNameLength || group?.Length > MaxNameLength)
+            TempData["Error"] = "Keep the name and the group under 80 characters.";
         else if (await _db.Categories.AnyAsync(c => c.Name == name && c.ListingType == listingType))
             TempData["Error"] = $"\"{name}\" already exists for {listingType}.";
         else

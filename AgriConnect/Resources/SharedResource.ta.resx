@@ -561,4 +561,8 @@
   <data name="That request did not make sense" xml:space="preserve"><value>அந்தக் கோரிக்கை புரியவில்லை</value></data>
   <data name="Something went wrong at our end" xml:space="preserve"><value>எங்கள் தரப்பில் ஏதோ தவறு நேர்ந்துள்ளது</value></data>
   <data name="Something went wrong" xml:space="preserve"><value>ஏதோ தவறு நேர்ந்துள்ளது</value></data>
+  <data name="Keep it under 500 characters." xml:space="preserve"><value>500 எழுத்துகளுக்குள் வைத்திருங்கள்.</value></data>
+  <data name="Keep the name and the group under 80 characters." xml:space="preserve"><value>பெயரையும் குழுவையும் 80 எழுத்துகளுக்குள் வைத்திருங்கள்.</value></data>
+  <data name="Some photos were not added. Use JPG, PNG or WebP, up to 4 MB each." xml:space="preserve"><value>சில புகைப்படங்கள் சேர்க்கப்படவில்லை. JPG, PNG அல்லது WebP வடிவில், ஒவ்வொன்றும் 4 MB வரை.</value></data>
+  <data name="A listing holds five photos, so the later ones were not added." xml:space="preserve"><value>ஒரு பட்டியலில் ஐந்து புகைப்படங்கள் மட்டுமே; அதற்குப் பின் வந்தவை சேர்க்கப்படவில்லை.</value></data>
 </root>
