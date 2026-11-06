@@ -20,6 +20,10 @@ Then open **http://localhost:8080** and sign in as `user@agriconnect.local` /
 `User!Dev2026`. The database is created, migrated and filled with demo data on first
 start — nothing else to do.
 
+Nothing installed at all? **Code → Codespaces → Create codespace on main** builds and
+runs it in the cloud and hands you a URL — see
+[INSTALL.md → Route C](INSTALL.md#route-c--github-codespaces-nothing-to-install).
+
 ---
 
 ## Contents

@@ -1,0 +1,55 @@
+{
+  "name": "AgriConnect",
+
+  // A plain Linux base, not a .NET image: the application is built and run by
+  // docker compose inside this machine, exactly as it is on a laptop, so the SDK
+  // belongs in the build container rather than out here. It is included anyway for
+  // `dotnet ef` and ad-hoc commands in the terminal.
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+
+  "features": {
+    // Lets `docker compose` run inside the Codespace.
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/dotnet:2": { "version": "8.0" }
+  },
+
+  // SQL Server 2022 will not start with less than 2 GB to itself, and the image
+  // downloads are about 2.5 GB before anything is built.
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+
+  "forwardPorts": [8080],
+
+  "portsAttributes": {
+    "8080": {
+      "label": "AgriConnect",
+      "onAutoForward": "notify",
+      // Anyone with the link can open it, which is the point of a demo. If an
+      // organisation policy forbids public ports this is ignored and the port stays
+      // private - set it by hand in the Ports panel, or share the Codespace instead.
+      "visibility": "public"
+    },
+    "1433": {
+      "label": "SQL Server",
+      "onAutoForward": "silent"
+    }
+  },
+
+  // Runs on create and on every restart. `up -d --build` is idempotent: the first
+  // run pulls the images and builds (5-10 minutes), later ones take seconds.
+  // Migrations apply and demo data is seeded by the application itself on startup,
+  // so there is nothing else to run.
+  "postStartCommand": "docker compose up -d --build",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-mssql.mssql"
+      ]
+    }
+  }
+}

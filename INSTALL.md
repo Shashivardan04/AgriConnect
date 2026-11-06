@@ -7,6 +7,7 @@ the code.
 - [Requirements](#requirements)
 - [Route A — Docker](#route-a--docker-recommended)
 - [Route B — from source](#route-b--from-source)
+- [Route C — GitHub Codespaces, nothing to install](#route-c--github-codespaces-nothing-to-install)
 - [First run](#first-run)
 - [Configuration reference](#configuration-reference)
 - [Troubleshooting](#troubleshooting)
@@ -159,6 +160,43 @@ demo data is seeded on startup, exactly as in Route A.
 **Optional — Visual Studio:** open `AgriConnect.sln`, right-click the project →
 **Manage User Secrets**, paste the connection string into the JSON that opens, then
 press **F5**.
+
+---
+
+## Route C — GitHub Codespaces, nothing to install
+
+For showing the application to someone who should not have to install Docker, or for
+running it from a machine that cannot. GitHub builds and runs it in the cloud and
+gives you a URL.
+
+**1.** On https://github.com/Shashivardan04/AgriConnect, click the green **Code**
+button → **Codespaces** tab → **Create codespace on main**.
+
+**2.** Wait. The container starts, then `docker compose up -d --build` runs by itself —
+it pulls about 2.5 GB of images and builds the application, so the **first** start
+takes 5–10 minutes. The terminal shows the progress. Later starts of the same
+codespace take seconds.
+
+**3.** When it finishes, the **Ports** tab shows **8080 — AgriConnect**. Click the
+globe icon to open it, or copy the `https://…-8080.app.github.dev` address.
+
+**4.** To let someone else open that address, the port must be public.
+`.devcontainer/devcontainer.json` asks for this already, but if your account or
+organisation restricts public ports it stays private — right-click the port in the
+**Ports** tab → **Port Visibility** → **Public**, then share the URL.
+
+Everything else behaves exactly as in Route A: migrations apply and demo data is
+seeded on the first request, and the accounts below work.
+
+> **Codespaces is metered.** A personal account gets 60 core-hours and 15 GB of
+> storage a month free; this configuration asks for a 2-core machine, so that is
+> about 30 hours of running time. **Stop the codespace when you are done** —
+> github.com/codespaces → `…` → **Stop codespace** — or it keeps billing against that
+> allowance while it idles. Delete it when the demo is over.
+
+> **Anyone with a public port URL can reach the site**, and the demo accounts below
+> have published passwords, including an administrator. That is fine for a
+> walkthrough. Do not leave it public afterwards.
 
 ---
 
