@@ -137,7 +137,12 @@ public class ListingsController : Controller
         // range. Same half-open comparison the booking rule uses, so search and
         // approval can never disagree about what "free" means - otherwise a worker
         // shows as available and then refuses the booking.
-        if (filter.From is DateOnly from && filter.To is DateOnly to && to > from)
+        // Produce is excluded. Its bookings are orders carrying a collection day, not a
+        // period the listing is taken for, so one buyer collecting on the 10th must not
+        // hide a listing that still has plenty left. The search form omits these inputs
+        // for the marketplace, but a hand-written query string still arrives here.
+        if (listingType != ListingType.Produce
+            && filter.From is DateOnly from && filter.To is DateOnly to && to > from)
         {
             if (listingType == ListingType.Labour)
             {
@@ -545,7 +550,7 @@ public class ListingsController : Controller
         if (type == ListingType.Labour && string.IsNullOrWhiteSpace(listing.Skills))
             ModelState.AddModelError(nameof(Listing.Skills), "Describe the work you can do.");
 
-        if (!string.IsNullOrEmpty(listing.District) && !Districts.All.Contains(listing.District))
+        if (Districts.IsUnknown(listing.District))
             ModelState.AddModelError(nameof(Listing.District), "Choose a district from the list.");
     }
 

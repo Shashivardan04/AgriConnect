@@ -155,7 +155,31 @@ give a quantity and an asking price. Picking the product sets the unit it is nor
 sold in, and the quantity box says what it wants: *Quantity (head)* for sheep,
 *Quantity (kg)* for tomatoes. You can change the unit if you genuinely sell that way.
 
-Produce is not booked by date — buyers see your contact details and get in touch.
+Milk and eggs are different: the administrator marks those products as sold daily, and
+for them the quantity box means how much you have **every morning**, not how much you
+have in total. It is never reduced by an order, and such a listing never shows as sold
+out — a week fully spoken for says nothing about the week after. Buyers can take some
+just once, or every day between two dates, as long as the total promised on any one day
+stays within what you offer.
+
+Buyers order from your listing the way renters request a machine. They say how much
+they want and which day they will collect it, and it arrives under **Requests for my
+listings**. Accept it and the quantity comes off your listing straight away — list
+100 kg, accept an order for 30, and the page now reads 70 kg. Several buyers can hold
+orders against the same listing at once; they only compete when there is not enough
+left for the next one.
+
+### Buying
+
+Open a product and use **Buy this**. Say how much you want and the day you will collect
+it. You can ask for part of a listing — 30 kg of the 100 kg on offer — and you are not
+competing with the other buyers unless there is not enough to go round. For milk and
+eggs there is also **Every day**: pick how much you want each morning and for how many
+days, and the running total tells you what it comes to before you send it.
+
+Your orders sit under **My requests** with the quantity, the collection day and the
+price agreed. Either side can cancel one; if the seller had already accepted it, the
+quantity goes back on the listing.
 
 Where the administrator has recorded a reference price for your category and
 district, your listing shows how your asking price compares:
@@ -167,9 +191,14 @@ That figure is a recorded market price, **not** a valuation or a forecast. Price
 move with variety, quality, grade and date. Treat it as one more piece of
 information, not as what your crop is worth.
 
-When it sells, edit the listing and set its status to **Sold** — that keeps it
-visible with a Sold badge. **Remove listing** hides it entirely while keeping its
-booking history.
+When the last of it goes, the listing marks itself **Sold** and stays visible with a
+Sold badge; any orders still waiting on it are declined and those buyers are told why.
+You can still set **Sold** by hand to close a listing early. If an accepted order is
+later cancelled, the quantity comes back and the listing goes on sale again.
+
+On the edit page the quantity box holds **what you have left now**, after the orders
+you have accepted — not the amount you first listed. Change it only when the real
+figure has changed. **Remove listing** hides it entirely while keeping its order history.
 
 ## Market prices
 

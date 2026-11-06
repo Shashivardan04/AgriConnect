@@ -23,7 +23,8 @@ public enum PriceUnit
     PerHead = 5,
     // Appended, not inserted: these are stored as int, so renumbering would silently
     // reinterpret every existing row.
-    PerLitre = 6
+    PerLitre = 6,
+    PerDozen = 7
 }
 
 /// <summary>

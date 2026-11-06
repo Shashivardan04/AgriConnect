@@ -74,9 +74,11 @@
             <dl class="row small">
                 <dt class="col-sm-3">@L["Product"]</dt>
                 <dd class="col-sm-9">@L[Model.Category?.Name ?? ""]</dd>
-                <dt class="col-sm-3">@L["Quantity"]</dt>
+                @* Remaining, not the amount first listed - approved orders have already
+                   been taken out of it. *@
+                <dt class="col-sm-3">@L[Model.IsDailySale ? "Every day" : "Quantity left"]</dt>
                 <dd class="col-sm-9">
-                    @Model.Quantity?.ToString("N0") @L[ListingSlug.QuantityLabel(Model.PriceUnit)]
+                    @Model.Quantity?.ToString("0.##") @L[ListingSlug.QuantityLabel(Model.PriceUnit)]
                 </dd>
             </dl>
         }
@@ -117,6 +119,10 @@
         @if (Model.IsBookable)
         {
             <partial name="_BookingPanel" model="Model"/>
+        }
+        else if (Model.IsOrderable)
+        {
+            <partial name="_OrderPanel" model="Model"/>
         }
 
         @if (Model.Type == ListingType.Produce && ViewBag.Reference is MarketPrice reference)

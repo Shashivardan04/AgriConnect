@@ -40,6 +40,9 @@ else
             <tr>
                 <th>@L["Listing"]</th>
                 <th>@L[asOwner ? "Requested by" : "Owner"]</th>
+                @* Covers both: a date range for equipment and labour, a quantity and
+                   a collection day for an order. Renaming it would break the first
+                   reading to improve the second. *@
                 <th>@L["Dates"]</th>
                 <th>@L["Status"]</th>
                 <th class="text-end">@L["Action"]</th>
@@ -74,9 +77,34 @@ else
                         }
                     </td>
                     <td class="small">
-                        @Dates.Short(b.FromDate) &ndash; @Dates.Full(b.ToDate)
-                        @{ var nights = b.ToDate.DayNumber - b.FromDate.DayNumber; }
-                        <div class="text-muted">@nights @L[nights == 1 ? "day" : "days"]</div>
+                        @if (b.Quantity is decimal ordered)
+                        {
+                            <text>@ordered.ToString("0.##") @L[ListingSlug.QuantityLabel(listing.PriceUnit)]</text>
+                            @if (b.IsRecurring)
+                            {
+                                <text> @L["a day"]</text>
+                            }
+                            <div class="text-muted">
+                                @if (b.IsRecurring)
+                                {
+                                    <text>@Dates.Short(b.FromDate) &ndash; @Dates.Full(b.ToDate) &middot; @b.Days @L["days"]</text>
+                                }
+                                else
+                                {
+                                    <text>@L["Collect on"] @Dates.Full(b.PickupDate)</text>
+                                }
+                                @if (b.Total is decimal total)
+                                {
+                                    <text>&middot; &#8377;@total.ToString("N0")</text>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            var nights = b.ToDate.DayNumber - b.FromDate.DayNumber;
+                            <text>@Dates.Short(b.FromDate) &ndash; @Dates.Full(b.ToDate)</text>
+                            <div class="text-muted">@nights @L[nights == 1 ? "day" : "days"]</div>
+                        }
                     </td>
                     <td><span class="badge @Badge(b.Status)">@L[b.Status.ToString()]</span></td>
                     <td class="text-end">

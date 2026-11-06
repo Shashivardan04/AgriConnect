@@ -49,7 +49,7 @@ public class ProfileController : Controller
         var user = await _users.GetUserAsync(User);
         if (user is null) return NotFound();
 
-        if (!Districts.All.Contains(form.District))
+        if (Districts.IsUnknown(form.District))
             ModelState.AddModelError(nameof(ProfileForm.District), "Choose a district from the list.");
 
         if (!ModelState.IsValid)

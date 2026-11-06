@@ -41,6 +41,7 @@
             {
                 <option value="@category.Id"
                         data-unit="@((int?)category.SuggestedUnit)"
+                        data-daily="@category.SellsDaily.ToString().ToLowerInvariant()"
                         selected="@(category.Id == Model.CategoryId)">
                     @L[category.Name]@(category.Group is null ? "" : $" ({L[category.Group].Value})")
                 </option>
@@ -75,10 +76,18 @@
     {
         <div class="col-md-4">
             <label asp-for="Quantity" class="form-label">
-                @L["Quantity available"] <span class="text-muted" id="quantity-unit"></span>
+                @L["Quantity available"]
+                <span class="text-muted" id="quantity-unit" data-day="@L["a day"]"></span>
             </label>
             <input asp-for="Quantity" class="form-control">
             <span asp-validation-for="Quantity" class="text-danger small"></span>
+            @* On Edit this is what is LEFT: accepted orders have already come out of it,
+               so a seller who has sold 30 of 100 sees 70 and should correct it only if
+               the real figure has changed. *@
+            @if (Model.Id != 0)
+            {
+                <div class="form-text">@L["What you have left now, after the orders you have accepted."]</div>
+            }
         </div>
     }
 
@@ -149,12 +158,19 @@
         if (!category || !unit) return;
 
         const quantityUnit = document.getElementById('quantity-unit');
-        const unitNouns = { 3: 'kg', 4: 'quintal', 5: 'head', 6: 'litres', 1: 'days', 2: 'hours' };
+        const unitNouns = { 3: 'kg', 4: 'quintal', 5: 'head', 6: 'litres', 7: 'dozen', 1: 'days', 2: 'hours' };
+
+        // Milk and eggs renew: for those the figure is what there is every morning, so
+        // the hint has to say so or a seller enters a week's yield as a one-off stock.
+        function isDaily() {
+            return category.selectedOptions[0]?.dataset.daily === 'true';
+        }
 
         function showQuantityUnit() {
             if (quantityUnit) {
                 const noun = unitNouns[unit.value];
-                quantityUnit.textContent = noun ? '(' + noun + ')' : '';
+                const perDay = isDaily() ? ' ' + (quantityUnit.dataset.day || '') : '';
+                quantityUnit.textContent = noun ? '(' + noun + perDay + ')' : '';
             }
         }
 

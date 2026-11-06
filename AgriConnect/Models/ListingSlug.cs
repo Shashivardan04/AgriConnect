@@ -63,6 +63,7 @@ public static class ListingSlug
         PriceUnit.PerQuintal => "per quintal",
         PriceUnit.PerHead => "per head",
         PriceUnit.PerLitre => "per litre",
+        PriceUnit.PerDozen => "per dozen",
         _ => ""
     };
 
@@ -77,6 +78,7 @@ public static class ListingSlug
         PriceUnit.PerQuintal => "quintal",
         PriceUnit.PerHead => "head",
         PriceUnit.PerLitre => "litres",
+        PriceUnit.PerDozen => "dozen",
         PriceUnit.PerDay => "days",
         PriceUnit.PerHour => "hours",
         _ => ""

@@ -47,6 +47,15 @@
             </select>
         </div>
 
+        @* Marked here rather than per listing so one decision covers every seller
+           of the product. The script below already shows and hides .produce-only. *@
+        <div class="col-6 col-md-2 produce-only d-none">
+            <div class="form-check mt-4">
+                <input class="form-check-input" type="checkbox" name="sellsDaily" value="true" id="sellsDaily">
+                <label class="form-check-label small" for="sellsDaily">@L["Can be bought daily"]</label>
+            </div>
+        </div>
+
         <div class="col-auto">
             <button class="btn btn-sm btn-success">@L["Add"]</button>
         </div>
@@ -89,6 +98,10 @@
                             @if (c.SuggestedUnit is PriceUnit unit)
                             {
                                 @L[ListingSlug.UnitLabel(unit)]
+                            }
+                            @if (c.SellsDaily)
+                            {
+                                <span class="badge bg-info-subtle text-info-emphasis border ms-2">@L["Sold daily"]</span>
                             }
                         </td>
                         <td class="text-end">

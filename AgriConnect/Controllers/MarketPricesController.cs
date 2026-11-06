@@ -58,7 +58,7 @@ public class MarketPricesController : Controller
     public async Task<IActionResult> Edit(
         int? id, [Bind("CategoryId,District,Price,Unit,Source,AsOfDate")] MarketPrice input)
     {
-        if (!Districts.All.Contains(input.District))
+        if (Districts.IsUnknown(input.District))
             ModelState.AddModelError(nameof(MarketPrice.District), "Choose a district from the list.");
 
         if (!ModelState.IsValid)

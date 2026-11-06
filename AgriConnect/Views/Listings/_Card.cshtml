@@ -32,8 +32,11 @@
             <div class="mt-auto">
                 @if (Model.Quantity is decimal qty)
                 {
+                    @* For a daily product the figure is what there is every morning,
+                       not a stock, so "available" would read as a one-off amount. *@
                     <div class="small text-muted">
-                        @qty.ToString("N0") @L[ListingSlug.QuantityLabel(Model.PriceUnit)] @L["available"]
+                        @qty.ToString("N0") @L[ListingSlug.QuantityLabel(Model.PriceUnit)]
+                        @L[Model.IsDailySale ? "a day" : "available"]
                     </div>
                 }
                 <span class="fw-semibold">₹@Model.Price.ToString("N0")</span>

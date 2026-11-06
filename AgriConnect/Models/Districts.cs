@@ -60,4 +60,16 @@ public static class Districts
         "Villupuram",
         "Virudhunagar"
     ];
+
+    /// <summary>
+    /// Whether this is a district nobody could have chosen. Compared exactly: the value
+    /// comes from a dropdown, so a near miss is a tampered post rather than a typo worth
+    /// forgiving.
+    ///
+    /// An empty value is deliberately NOT this rule's business. Every field holding a
+    /// district is [Required], which has already spoken for it; answering again only
+    /// stacks two complaints under one box.
+    /// </summary>
+    public static bool IsUnknown(string? district) =>
+        !string.IsNullOrEmpty(district) && !All.Contains(district);
 }

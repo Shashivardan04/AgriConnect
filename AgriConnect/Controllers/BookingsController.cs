@@ -68,6 +68,23 @@ public class BookingsController : Controller
         return RedirectToListing(listingId);
     }
 
+    /// <summary>
+    /// Buy part of a produce listing. The counterpart of RequestDates: equipment and
+    /// labour are reserved over a range, produce is taken by the kilo.
+    /// </summary>
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Order(
+        int listingId, DateOnly pickup, decimal quantity, string? message, int days = 1)
+    {
+        var result = await _bookings
+            .OrderAsync(listingId, _users.GetUserId(User)!, pickup, quantity, message, days);
+
+        if (result.Ok) TempData["Message"] = "Order sent. The seller will accept or decline it.";
+        else TempData["Error"] = result.Error;
+
+        return RedirectToListing(listingId);
+    }
+
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Block(int listingId, DateOnly from, DateOnly to, string? reason)
     {
@@ -121,8 +138,20 @@ public class BookingsController : Controller
 
     private IActionResult RedirectToListing(int listingId)
     {
-        var type = _db.Listings.Where(l => l.Id == listingId).Select(l => l.Type).FirstOrDefault();
-        return RedirectToAction("Details", "Listings",
-            new { type = ListingSlug.From(type), id = listingId });
+        // Projected as nullable on purpose. ListingType has no zero member, so on a
+        // missing row a plain FirstOrDefault hands back (ListingType)0 and
+        // ListingSlug.From throws on it - turning "that listing no longer exists",
+        // which the caller has already worded for the member, into a 500 on the very
+        // redirect meant to show them that message.
+        var type = _db.Listings
+            .Where(l => l.Id == listingId)
+            .Select(l => (ListingType?)l.Type)
+            .FirstOrDefault();
+
+        return type is ListingType known
+            ? RedirectToAction("Details", "Listings",
+                new { type = ListingSlug.From(known), id = listingId })
+            // Nowhere left to send them; TempData carries the reason to the home page.
+            : RedirectToAction("Index", "Home");
     }
 }

@@ -54,8 +54,13 @@ day.
 
 Grain, vegetables, fruit, livestock and milk, grouped under **Cereals & Pulses /
 Vegetables / Fruits / Livestock / Dairy**. A seller lists a product with a quantity, a
-unit (per kg, per quintal, per head, per litre) and a price. Produce is not booked —
-the buyer contacts the seller — and every product page shows the district's reference
+unit (per kg, per quintal, per head, per litre) and a price. A buyer orders **part of
+a listing** — 30 kg of the 100 kg on offer — naming a collection day; the seller accepts
+or declines it like any other request, and what is left drops by what was taken. A
+listing that reaches zero marks itself **Sold**. Milk and eggs work the other way:
+an administrator marks those categories as sold daily, their quantity is what there is
+**every** morning rather than a stock, and a buyer may take some of it once or every
+day for a stretch of dates. Every product page also shows the district's reference
 price beside the asking price, with the difference worked out.
 
 ### Agricultural labour — `/labour`
@@ -204,7 +209,42 @@ same shape — someone offers something at a price in a place, and two of the th
 reserved over a date range — so there is one `Listing` table with a `Type`
 discriminator and one `Booking` table. The URLs `/equipment`, `/marketplace` and
 `/labour` map onto it through `ListingSlug`, so the site still reads as three modules.
-Produce listings simply never get a booking.
+A produce order is the same `Booking` row read differently: the range is the collection
+day, `[pickup, pickup + 1)`, and `Quantity` carries how much was asked for.
+
+**Two questions, one approval path.** Equipment and labour ask *are these dates free?*;
+produce asks *is there enough left?* — two buyers taking 20 kg each of the same 100 kg
+do not compete, where two renters wanting the same Tuesday do. Rather than a second
+service, `ApproveAsync` forks at one line between an overlap check and a stock
+drawdown, inside the same transaction and the same `sp_getapplock` that already stops
+two owners double-booking. `Listing.IsBookable` was deliberately **not** widened to
+cover produce: it gates the availability calendar, which answers the wrong question,
+so produce got a sibling `IsOrderable` instead and the date rules stayed where they were.
+
+**Two kinds of quantity, because there are two kinds of produce.** A sack of onions
+is consumed: sell 30 kg of 100 and 70 remain. A cow has milked again by morning, so a
+dairy's twenty litres is a capacity that renews, never runs down, and never sells out —
+marking a fully-booked dairy Sold would hide it permanently and refuse the orders it
+can still fill. Which one a listing is comes from `Category.SellsDaily`, settled once
+per product by an administrator rather than per listing by each seller.
+
+`Booking.Quantity` is **per day** in both cases, so one definition covers both and the
+fork never leaks into the data: a single collection is a one-day range, a standing
+order is the same row over more days. Capacity is checked at the busiest day of the
+requested range, and because what is promised only rises on a day some order begins,
+that day is either the first or one of those — a handful of comparisons instead of a
+walk through a year of dates.
+
+**What is left is stored, not derived.** `Listing.Quantity` *is* the remaining amount;
+approving an order subtracts from it and cancelling one adds back, both under the lock.
+The alternative — keeping the amount first listed and computing `stated − SUM(approved)`
+— was rejected because the cards, the detail page, the search filters and the category
+totals all read `Listing.Quantity` directly, so every one of them would have needed a
+join to stay honest. Nothing is lost: the original is still `remaining + SUM(approved)`.
+
+Money is not part of this. An order records the price it was agreed at so that a later
+edit cannot rewrite it, but cash still changes hands off the platform, exactly as it
+does for equipment rental.
 
 **Every section is browsed category-first**, through one `CategoryIndex` action and
 one view. `/equipment` lists machines under Tillage / Sowing / Harvesting / Irrigation

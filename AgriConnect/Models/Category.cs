@@ -24,4 +24,16 @@ public class Category
     /// </summary>
     [Display(Name = "Usual unit")]
     public PriceUnit? SuggestedUnit { get; set; }
+
+    /// <summary>
+    /// Milk and eggs come every morning; a sack of onions does not. For these the
+    /// quantity on a listing is a DAILY capacity that renews rather than a stock that
+    /// runs down, and a buyer may take some every day over a stretch of dates.
+    ///
+    /// It sits on the category rather than the listing so that an administrator settles
+    /// it once per product, the same way Group and SuggestedUnit are settled. False for
+    /// equipment and labour, which are not sold by quantity at all.
+    /// </summary>
+    [Display(Name = "Can be bought daily")]
+    public bool SellsDaily { get; set; }
 }

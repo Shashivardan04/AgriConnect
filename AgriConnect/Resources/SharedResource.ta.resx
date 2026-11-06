@@ -565,4 +565,37 @@
   <data name="Keep the name and the group under 80 characters." xml:space="preserve"><value>பெயரையும் குழுவையும் 80 எழுத்துகளுக்குள் வைத்திருங்கள்.</value></data>
   <data name="Some photos were not added. Use JPG, PNG or WebP, up to 4 MB each." xml:space="preserve"><value>சில புகைப்படங்கள் சேர்க்கப்படவில்லை. JPG, PNG அல்லது WebP வடிவில், ஒவ்வொன்றும் 4 MB வரை.</value></data>
   <data name="A listing holds five photos, so the later ones were not added." xml:space="preserve"><value>ஒரு பட்டியலில் ஐந்து புகைப்படங்கள் மட்டுமே; அதற்குப் பின் வந்தவை சேர்க்கப்படவில்லை.</value></data>
+  <data name="Buy this" xml:space="preserve"><value>இதை வாங்க</value></data>
+  <data name="still on offer" xml:space="preserve"><value>இன்னும் உள்ளது</value></data>
+  <data name="Quantity left" xml:space="preserve"><value>மீதமுள்ள அளவு</value></data>
+  <data name="Sign in to buy" xml:space="preserve"><value>வாங்க உள்நுழைக</value></data>
+  <data name="This is your own listing. Orders for it appear under Requests for my listings." xml:space="preserve"><value>இது உங்கள் சொந்த பட்டியல். இதற்கான ஆர்டர்கள் எனது பட்டியல்களுக்கான கோரிக்கைகளில் தெரியும்.</value></data>
+  <data name="This one has sold out." xml:space="preserve"><value>இது விற்றுமுடிந்துவிட்டது.</value></data>
+  <data name="How much you want" xml:space="preserve"><value>உங்களுக்கு எவ்வளவு வேண்டும்</value></data>
+  <data name="Collect on" xml:space="preserve"><value>எடுத்துச் செல்லும் நாள்</value></data>
+  <data name="Anything the seller should know" xml:space="preserve"><value>விற்பவர் தெரிந்து கொள்ள வேண்டியது ஏதேனும்</value></data>
+  <data name="Send this order" xml:space="preserve"><value>இந்த ஆர்டரை அனுப்பு</value></data>
+  <data name="Part of a listing is fine. The seller accepts or declines it." xml:space="preserve"><value>ஒரு பட்டியலில் ஒரு பகுதியை மட்டும் வாங்கலாம். விற்பவர் அதை ஏற்பார் அல்லது மறுப்பார்.</value></data>
+  <data name="What you have left now, after the orders you have accepted." xml:space="preserve"><value>நீங்கள் ஏற்றுக்கொண்ட ஆர்டர்களுக்குப் பிறகு, இப்போது உங்களிடம் மீதமுள்ள அளவு.</value></data>
+  <data name="per dozen" xml:space="preserve"><value>டஜன் ஒன்றுக்கு</value></data>
+  <data name="dozen" xml:space="preserve"><value>டஜன்</value></data>
+  <data name="available every day" xml:space="preserve"><value>தினமும் கிடைக்கும்</value></data>
+  <data name="How much each day" xml:space="preserve"><value>ஒவ்வொரு நாளும் எவ்வளவு</value></data>
+  <data name="Just once" xml:space="preserve"><value>ஒரு முறை மட்டும்</value></data>
+  <data name="Every day" xml:space="preserve"><value>தினமும்</value></data>
+  <data name="Starting" xml:space="preserve"><value>தொடங்கும் நாள்</value></data>
+  <data name="For how many days" xml:space="preserve"><value>எத்தனை நாட்களுக்கு</value></data>
+  <data name="Take some every day, or just the once. The seller accepts or declines it." xml:space="preserve"><value>தினமும் கொஞ்சம் வாங்கலாம், அல்லது ஒரு முறை மட்டும். விற்பவர் அதை ஏற்பார் அல்லது மறுப்பார்.</value></data>
+  <data name="a day" xml:space="preserve"><value>ஒரு நாளைக்கு</value></data>
+  <data name="Sold daily" xml:space="preserve"><value>தினமும் விற்பனை</value></data>
+  <data name="Can be bought daily" xml:space="preserve"><value>தினமும் வாங்க முடியும்</value></data>
+  <data name="Egg" xml:space="preserve"><value>முட்டை</value></data>
+  <data name="Order sent. The seller will accept or decline it." xml:space="preserve"><value>ஆர்டர் அனுப்பப்பட்டது. விற்பவர் அதை ஏற்பார் அல்லது மறுப்பார்.</value></data>
+  <data name="That listing has sold out." xml:space="preserve"><value>அந்தப் பட்டியல் விற்று முடிந்துவிட்டது.</value></data>
+  <data name="Enter how much you want." xml:space="preserve"><value>உங்களுக்கு எவ்வளவு வேண்டும் என்பதைக் குறிப்பிடுங்கள்.</value></data>
+  <data name="Livestock is sold by the head, so enter a whole number." xml:space="preserve"><value>கால்நடைகள் எண்ணிக்கையில் விற்கப்படுகின்றன, எனவே முழு எண்ணைக் குறிப்பிடுங்கள்.</value></data>
+  <data name="That order carries no quantity." xml:space="preserve"><value>அந்த ஆர்டரில் அளவு குறிப்பிடப்படவில்லை.</value></data>
+  <data name="This listing is booked by date, not ordered by quantity." xml:space="preserve"><value>இந்தப் பட்டியல் நாட்களின்படி முன்பதிவு செய்யப்படுகிறது, அளவின்படி ஆர்டர் செய்யப்படுவதில்லை.</value></data>
+  <data name="A standing order runs for at least a day and at most a year." xml:space="preserve"><value>ஒரு நிரந்தர ஆர்டர் குறைந்தது ஒரு நாள், அதிகபட்சம் ஒரு ஆண்டு வரை நீடிக்கும்.</value></data>
+  <data name="This one is not sold by the day. Order what you need in one go." xml:space="preserve"><value>இது நாள்தோறும் விற்கப்படுவதில்லை. உங்களுக்குத் தேவையானதை ஒரே முறையில் ஆர்டர் செய்யுங்கள்.</value></data>
 </root>

@@ -123,6 +123,10 @@ namespace AgriConnect.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<decimal?>("Quantity")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<string>("RequesterId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -132,6 +136,10 @@ namespace AgriConnect.Data.Migrations
 
                     b.Property<DateOnly>("ToDate")
                         .HasColumnType("date");
+
+                    b.Property<decimal?>("UnitPrice")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
 
@@ -161,6 +169,9 @@ namespace AgriConnect.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
+
+                    b.Property<bool>("SellsDaily")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("SuggestedUnit")
                         .HasColumnType("int");

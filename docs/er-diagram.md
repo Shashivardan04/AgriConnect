@@ -25,6 +25,7 @@ erDiagram
         datetimeoffset LockoutEnd
         bit LockoutEnabled
         int AccessFailedCount
+        int Gender
     }
     Bookings {
         int Id PK
@@ -35,11 +36,16 @@ erDiagram
         int Status
         nvarchar Message
         datetime2 CreatedAt
+        decimal Quantity
+        decimal UnitPrice
     }
     Categories {
         int Id PK
         nvarchar Name
         int ListingType
+        nvarchar Group
+        int SuggestedUnit
+        bit SellsDaily
     }
     ListingImages {
         int Id PK
@@ -99,4 +105,3 @@ erDiagram
     Listings ||--o{ ListingImages : "ListingImages_Listings_ListingId"
     Listings ||--o{ ListingReports : "ListingReports_Listings_ListingId"
 ```
-

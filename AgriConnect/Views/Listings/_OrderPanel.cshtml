@@ -1,0 +1,158 @@
+@model Listing
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@{
+    // The produce counterpart of _BookingPanel. Deliberately not a branch inside that
+    // partial: four fifths of it is a month calendar, which answers "which days is this
+    // taken?" - the wrong question for something sold by the kilo.
+    var isOwner = User.Identity?.IsAuthenticated == true
+                  && Model.OwnerId == UserManager.GetUserId(User);
+    var today = DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd");
+    var left = Model.Quantity ?? 0;
+    var noun = L[ListingSlug.QuantityLabel(Model.PriceUnit)].Value;
+
+    // Milk and eggs: the figure is what there is EVERY day, so it is never drawn down
+    // and the buyer may take some of it over a stretch of dates.
+    var daily = Model.IsDailySale;
+
+    // Livestock is counted, not weighed; the service refuses half a goat, so the input
+    // should not offer one either.
+    var whole = Model.PriceUnit == PriceUnit.PerHead;
+    var price = Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    // Both phrasings are rendered here rather than in script, so both get translated.
+    var onceLabel = L["How much you want"].Value;
+    var dailyLabel = L["How much each day"].Value;
+}
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h6 class="card-title">@L["Buy this"]</h6>
+
+        <p class="mb-3">
+            <span class="h4">@left.ToString("0.##")</span>
+            <span class="text-muted">@noun @L[daily ? "available every day" : "still on offer"]</span>
+        </p>
+
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <a class="btn btn-success btn-sm w-100" asp-area="Identity" asp-page="/Account/Login"
+               asp-route-returnUrl="@Context.Request.Path">@L["Sign in to buy"]</a>
+        }
+        else if (isOwner)
+        {
+            <p class="small text-muted mb-0">
+                @L["This is your own listing. Orders for it appear under Requests for my listings."]
+            </p>
+        }
+        else if (Model.Status != ListingStatus.Active || left <= 0)
+        {
+            <p class="small text-muted mb-0">@L["This one has sold out."]</p>
+        }
+        else
+        {
+            <form asp-controller="Bookings" asp-action="Order" method="post">
+                <input type="hidden" name="listingId" value="@Model.Id"/>
+
+                @if (daily)
+                {
+                    @* Buying once and buying every day are the same order with a
+                       different number of days, so this picks a number rather than
+                       switching to another form. *@
+                    <div class="btn-group btn-group-sm w-100 mb-2" role="group">
+                        <input type="radio" class="btn-check" name="mode" id="mode-once" value="once" checked>
+                        <label class="btn btn-outline-success" for="mode-once">@L["Just once"]</label>
+                        <input type="radio" class="btn-check" name="mode" id="mode-daily" value="daily">
+                        <label class="btn btn-outline-success" for="mode-daily">@L["Every day"]</label>
+                    </div>
+                }
+
+                <div class="row g-2">
+                    <div class="col-7">
+                        <label class="form-label small mb-1" for="order-qty" id="order-qty-label"
+                               data-once="@onceLabel" data-daily="@dailyLabel">@onceLabel</label>
+                        <div class="input-group input-group-sm">
+                            <input type="number" name="quantity" id="order-qty" class="form-control"
+                                   min="@(whole ? "1" : "0.01")" max="@left" step="@(whole ? "1" : "0.01")" required>
+                            <span class="input-group-text">@noun</span>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label small mb-1" for="order-pickup">
+                            @L[daily ? "Starting" : "Collect on"]
+                        </label>
+                        <input type="date" name="pickup" id="order-pickup" class="form-control form-control-sm"
+                               min="@today" required>
+                    </div>
+
+                    @if (daily)
+                    {
+                        <div class="col-12 daily-only d-none">
+                            <label class="form-label small mb-1" for="order-days">@L["For how many days"]</label>
+                            <input type="number" name="days" id="order-days" class="form-control form-control-sm"
+                                   min="1" max="365" value="1">
+                        </div>
+                    }
+
+                    <div class="col-12">
+                        <label class="form-label small mb-1" for="order-message">@L["Message"]</label>
+                        <textarea name="message" id="order-message" rows="2" maxlength="500"
+                                  class="form-control form-control-sm"
+                                  placeholder="@L["Anything the seller should know"]"></textarea>
+                    </div>
+                </div>
+
+                <button class="btn btn-success btn-sm w-100 mt-2" type="submit">@L["Send this order"]</button>
+                <div class="form-text" id="order-total">
+                    @L[daily
+                         ? "Take some every day, or just the once. The seller accepts or declines it."
+                         : "Part of a listing is fine. The seller accepts or declines it."]
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@* Inline, not in a Scripts section: a partial cannot define one. Same shape as the
+   unit hint in _Form. *@
+<script>
+    (function () {
+        const qty = document.getElementById('order-qty');
+        const out = document.getElementById('order-total');
+        if (!qty || !out) return;
+
+        const price = @price;
+        const hint = out.textContent;
+        const days = document.getElementById('order-days');
+        const repeat = document.getElementById('mode-daily');
+        const label = document.getElementById('order-qty-label');
+
+        function total() {
+            const wanted = parseFloat(qty.value);
+            const over = days ? Math.max(1, parseInt(days.value, 10) || 1) : 1;
+
+            out.textContent = wanted > 0
+                ? '≈ ₹' + Math.round(wanted * price * over).toLocaleString('en-IN')
+                : hint;
+        }
+
+        function sync() {
+            const every = repeat && repeat.checked;
+
+            document.querySelectorAll('.daily-only')
+                .forEach(el => el.classList.toggle('d-none', !every));
+
+            // Hidden means once, so the field cannot be left holding a stale number.
+            if (days) days.value = every ? (parseInt(days.value, 10) > 1 ? days.value : 7) : 1;
+            if (label) label.textContent = label.dataset[every ? 'daily' : 'once'];
+
+            total();
+        }
+
+        qty.addEventListener('input', total);
+        if (days) days.addEventListener('input', total);
+        document.querySelectorAll('input[name="mode"]')
+            .forEach(el => el.addEventListener('change', sync));
+
+        sync();
+    })();
+</script>

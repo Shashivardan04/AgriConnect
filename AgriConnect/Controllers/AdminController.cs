@@ -68,7 +68,8 @@ public class AdminController : Controller
 
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> AddCategory(
-        string name, ListingType listingType, string? group, PriceUnit? suggestedUnit)
+        string name, ListingType listingType, string? group, PriceUnit? suggestedUnit,
+        bool sellsDaily = false)
     {
         name = name?.Trim() ?? "";
         group = string.IsNullOrWhiteSpace(group) ? null : group.Trim();
@@ -90,7 +91,10 @@ public class AdminController : Controller
                 // Only marketplace products are grouped and have a usual unit; a
                 // grouped labour task would render under a heading of one.
                 Group = listingType == ListingType.Produce ? group : null,
-                SuggestedUnit = listingType == ListingType.Produce ? suggestedUnit : null
+                SuggestedUnit = listingType == ListingType.Produce ? suggestedUnit : null,
+                // Milk and eggs renew every morning; a sack of onions does not. Only
+                // a marketplace product can be sold that way at all.
+                SellsDaily = listingType == ListingType.Produce && sellsDaily
             });
             await _db.SaveChangesAsync();
             TempData["Message"] = $"\"{name}\" added.";

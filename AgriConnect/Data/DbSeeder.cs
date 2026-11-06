@@ -184,6 +184,16 @@ public static class DbSeeder
                 ListingType = ListingType.Produce, Name = n, Group = group, SuggestedUnit = unit
             }));
 
+        // Milk and eggs come every morning, so their quantity is a daily capacity and
+        // a buyer may take some of it over a stretch of dates. Its own helper because
+        // params has to come last and cannot be followed by an optional flag.
+        void DailyProduct(string group, PriceUnit unit, params string[] names) =>
+            cats.AddRange(names.Select(n => new Category
+            {
+                ListingType = ListingType.Produce, Name = n, Group = group,
+                SuggestedUnit = unit, SellsDaily = true
+            }));
+
         // Equipment is grouped by the job it does, the same way products are grouped.
         // Machines are hired by the day, so the unit is the same throughout.
         void Machine(string group, params string[] names) =>
@@ -214,7 +224,8 @@ public static class DbSeeder
         Product("Fruits", PriceUnit.PerKg, "Mango", "Banana", "Guava", "Papaya", "Sapota", "Pomegranate");
         Product("Grains and Pulses", PriceUnit.PerQuintal,
             "Samba Paddy", "Groundnut", "Black Gram", "Green Gram", "Maize", "Ragi", "Cotton");
-        Product("Dairy", PriceUnit.PerLitre, "Cow Milk", "Buffalo Milk", "Goat Milk");
+        DailyProduct("Dairy", PriceUnit.PerLitre, "Cow Milk", "Buffalo Milk", "Goat Milk");
+        DailyProduct("Dairy", PriceUnit.PerDozen, "Egg");
 
         db.Categories.AddRange(cats);
         await db.SaveChangesAsync();
@@ -631,6 +642,10 @@ public static class DbSeeder
                 "Seven percent fat, for sweets."),
             L(ListingType.Produce, malathi, "Goat milk", "Goat Milk", 95, PriceUnit.PerLitre,
                 "Small quantity, booked in advance."),
+            L(ListingType.Produce, meena, "Country eggs", "Egg", 95, PriceUnit.PerDozen,
+                "Free range birds, collected each morning."),
+            L(ListingType.Produce, kalaiselvi, "Table eggs, graded", "Egg", 72, PriceUnit.PerDozen,
+                "Layer farm, delivered daily if wanted."),
 
             // Labour: one entry per person per task. Several of these people are
             // registered for more than one task at different wages, which is what the
@@ -775,6 +790,9 @@ public static class DbSeeder
             PriceUnit.PerHead => rng.Next(2, 14),
             PriceUnit.PerQuintal => rng.Next(8, 110),
             PriceUnit.PerLitre => rng.Next(25, 260),
+            // A dozen is a lot of eggs; a smallholder measures a morning's lay in tens,
+            // not hundreds. Without its own case this fell into the bulk-crop band.
+            PriceUnit.PerDozen => rng.Next(3, 40),
             _ => rng.Next(40, 700)
         };
 

@@ -28,6 +28,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             e.Property(x => x.Price).HasPrecision(10, 2);
             e.Property(x => x.Quantity).HasPrecision(10, 2);
             e.Ignore(x => x.IsBookable);
+            e.Ignore(x => x.IsOrderable);
+            e.Ignore(x => x.IsDailySale);
             e.Ignore(x => x.BookingResourceKey);
 
             // The search path: filter by district, then type, then exclude removed.
@@ -57,7 +59,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         b.Entity<Booking>(e =>
         {
+            // Same precision as Listing.Quantity and Listing.Price: an order is drawn
+            // down from one and priced from the other, and a mismatch would round.
+            e.Property(x => x.Quantity).HasPrecision(10, 2);
+            e.Property(x => x.UnitPrice).HasPrecision(10, 2);
+
             e.Ignore(x => x.IsOwnerBlock);
+            e.Ignore(x => x.Total);
+            e.Ignore(x => x.PickupDate);
+            e.Ignore(x => x.Days);
+            e.Ignore(x => x.IsRecurring);
 
             // Covers the overlap check in BookingService.
             e.HasIndex(x => new { x.ListingId, x.FromDate });
